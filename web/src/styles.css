@@ -3,6 +3,10 @@
 @import "katex/dist/katex.min.css";
 @import "tailwindcss";
 
+html, body {
+  background-color: transparent !important;
+}
+
 @theme {
   --animate-fade-in-up: fadeInUp 0.5s ease-out forwards;
   --animate-blob: blob 7s infinite;
