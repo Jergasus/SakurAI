@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    # --- Backend (API) ---
+    - name: Use Node.js ${{ matrix.node-version }} for API
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: api/package-lock.json
+
+    - name: Install API Dependencies
+      working-directory: ./api
+      run: npm ci
+
+    - name: Build API
+      working-directory: ./api
+      run: npm run build
+
+    - name: Test API (Unit)
+      working-directory: ./api
+      run: npm run test
+
+    # --- Frontend (Web) ---
+    - name: Use Node.js ${{ matrix.node-version }} for Web
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: web/package-lock.json
+
+    - name: Install Web Dependencies
+      working-directory: ./web
+      run: npm ci
+
+    - name: Build Web
+      working-directory: ./web
+      run: npm run build -- --configuration=production
+
+    # Optional: Run Frontend Tests (Requires headless chrome)
+    # - name: Test Web
+    #   working-directory: ./web
+    #   run: npm run test -- --no-watch --no-progress --browsers=ChromeHeadless

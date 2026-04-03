@@ -1,0 +1,36 @@
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import helmet from 'helmet';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  app.use(helmet());
+
+  const allowAll = process.env.CORS_ALLOW_ALL === 'true';
+  const allowedOrigins = (process.env.ALLOWED_ORIGINS || process.env.FRONTEND_URL || 'http://localhost:4200')
+    .split(',')
+    .map((o) => o.trim());
+
+  app.enableCors({
+    origin: (origin, callback) => {
+      // Allow requests without origin (curl, Postman) in development
+      if (!origin && process.env.NODE_ENV !== 'production') return callback(null, true);
+
+      // Self-hosted: allow all origins for simplicity
+      if (allowAll) return callback(null, true);
+
+      // Whitelist mode
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
+  await app.listen(process.env.PORT || 3000);
+}
+bootstrap();
