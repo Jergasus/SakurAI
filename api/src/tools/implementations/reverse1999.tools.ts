@@ -34,14 +34,30 @@ export const reverse1999Tools: AgentTool[] = [
     },
     execute: async (args) => {
       const characters = loadJSON('db_characters.json');
-      const name = (args.characterName || '').toLowerCase();
+      const name = (args.characterName || '').toLowerCase().replace(/[\s\-]/g, '');
       const character = characters.find(
-        (c: any) => (c.name || '').toLowerCase() === name,
+        (c: any) => (c.name || '').toLowerCase().replace(/[\s\-]/g, '') === name,
       );
       if (!character) {
         return { result: `Character "${args.characterName}" was not found in the database. This character may not exist or the name may be spelled differently.` };
       }
-      return character;
+      // Return compact version to avoid overwhelming Gemini with too much data
+      const compactSkills = (character.skills || []).map((s: any) => ({
+        name: s.name,
+        description: s.desc_1_star || '',
+      }));
+      return {
+        name: character.name,
+        tier: character.tier,
+        rarity: character.rarity,
+        afflatus: character.afflatus,
+        damage_type: character.damage_type,
+        roles: character.roles,
+        category: character.category,
+        skills: compactSkills,
+        insights: character.insights,
+        recommended_psychubes: character.recommended_psychubes,
+      };
     },
   },
   {

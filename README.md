@@ -1,25 +1,20 @@
-# SaaS Agents
+# 🌸 SakurAI
 
-A self-hosted AI chat agent with RAG (Retrieval-Augmented Generation). Deploy it on any server, upload your documents, and embed a chat widget on your website — your visitors get an AI assistant that answers based on your content.
+A self-hosted AI chat agent that blooms on your website. Upload your documents, embed a lightweight chat widget, and let SakurAI answer your visitors' questions — grounded in your own content, powered by RAG.
+
+## Why SakurAI?
+
+Drop a single `<script>` tag into any site and you get a polished AI assistant that actually knows your stuff. No third-party SaaS, no per-seat pricing — just your server, your data, your agent.
 
 ## Features
 
-- **Knowledge Base (RAG)** — Upload PDFs or paste text. The agent uses vector embeddings to find relevant context before answering.
-- **Embeddable Widget** — Add a `<script>` tag to any website. The chat widget works on WordPress, Shopify, plain HTML, or any platform.
-- **Admin Dashboard** — Configure your agent's personality, appearance, knowledge base, and tools from a web UI.
+- **Knowledge Base (RAG)** — Upload PDFs or paste text. SakurAI uses vector embeddings to find relevant context before answering.
+- **Embeddable Widget** — One `<script>` tag on any website — WordPress, Shopify, plain HTML, anything.
+- **Admin Dashboard** — Configure your agent's personality, appearance, knowledge base, and tools from a clean web UI.
 - **Conversation Memory** — Chat sessions persist across page reloads with automatic conversation summaries.
-- **Custom Tools** — Give your agent the ability to call APIs, query databases, or perform actions. See [TOOLS.md](TOOLS.md) for how to build custom tools.
-- **Zero Configuration** — `docker-compose up -d` starts everything. Default admin credentials are created on first boot.
-- **Multi-Tenant Ready** — Designed to support multiple distinct agents with separate knowledge bases.
-
-## Architecture
-
-The project is built as a modern containerized stack:
-
-- **Frontend**: Angular 18 (Dashboard and compiled Web Components for the widget) served by Nginx.
-- **Backend**: NestJS (Node.js) providing a secure API.
-- **Database**: MongoDB for storing tenants, configuration, chat history, and vector embeddings for RAG.
-- **AI Provider**: Google Gemini API.
+- **Custom Tools** — Give your agent the ability to call APIs, query databases, or perform actions. See [TOOLS.md](TOOLS.md) for details.
+- **Zero Configuration** — `docker-compose up -d` and you're live. Default admin credentials are created on first boot.
+- **Multi-Tenant Ready** — Run multiple distinct agents with separate knowledge bases from a single deployment.
 
 ## Quick Start
 
@@ -34,13 +29,13 @@ docker-compose up -d --build
 
 Open **http://localhost** and log in with `admin@localhost` / `admin123`.
 
-*Make sure to change these credentials immediately via the **Account** tab in the dashboard!*
+*Change these credentials right away via the **Account** tab in the dashboard!*
 
-## Local Testing With Your Own Project
+## Local Testing
 
-You do **not** need a VPS just to test the integration. You can run `saas_agents` locally using Docker Compose, and your own website locally at the same time.
+You don't need a VPS to try things out. Run SakurAI locally with Docker Compose alongside your own project.
 
-From the `saas_agents` admin dashboard at `http://localhost`, navigate to **Install**, copy the widget embed snippet, and paste it into your local project's HTML like so:
+From the admin dashboard at `http://localhost`, go to **Install**, copy the widget snippet, and drop it into your HTML:
 
 ```html
 <script src="http://localhost/widget/widget.js"></script>
@@ -49,48 +44,12 @@ From the `saas_agents` admin dashboard at `http://localhost`, navigate to **Inst
 
 ## Production Deployment
 
-This stack is intended to be deployed on a VPS (Virtual Private Server). See [DEPLOY.md](DEPLOY.md) for full production deployment, instructions on setting up HTTPS, changing default credentials, dealing with CORS, and migrating to MongoDB Atlas for advanced vector search.
-
-
-## Project Structure
-
-```
-.
-├── api/                     # Backend (NestJS)
-│   └── src/
-│       ├── auth/            # JWT authentication (login, register, guard)
-│       ├── bootstrap/       # Auto-creates default admin on first run
-│       ├── chat/            # Chat endpoint, session history, analytics
-│       ├── knowledge/       # RAG: text ingestion, PDF processing, vector search
-│       ├── schemas/         # MongoDB schemas (tenant, knowledge, chat session)
-│       ├── tenants/         # Tenant CRUD, account management
-│       ├── tools/           # Tool registry and interface for custom tools
-│       ├── app.module.ts    # Root module
-│       └── main.ts          # Entry point, CORS config
-│
-├── web/                     # Frontend (Angular)
-│   └── src/
-│       ├── app/
-│       │   ├── components/  # Chat widget (used in admin dashboard preview)
-│       │   ├── guards/      # Auth route guard
-│       │   ├── interceptors/# JWT token interceptor
-│       │   ├── pages/       # Login, Admin dashboard, Public chat
-│       │   ├── services/    # API clients (auth, chat, knowledge, tenant)
-│       │   └── widget/      # Embeddable Web Component (Shadow DOM)
-│       ├── environments/    # Dev/prod API URL config
-│       ├── main.ts          # App entry point
-│       └── widget.ts        # Widget entry point (builds to widget.js)
-│
-├── docker-compose.yml       # MongoDB + API + Web (one command)
-├── .env.example             # Configuration template
-├── DEPLOY.md                # Deployment and embedding guide
-└── TOOLS.md                 # Guide for creating custom tools
-```
+SakurAI is designed to run on a single VPS. See [DEPLOY.md](DEPLOY.md) for HTTPS setup, credential management, CORS configuration, and MongoDB Atlas migration.
 
 ## How It Works
 
 ```
-User's website                    Your server (one VPS)
+Your visitor's browser               Your server (one VPS)
 ┌─────────────┐                  ┌─────────────────────────┐
 │  <script>   │ ──── loads ────▶ │ Nginx (:80)             │
 │  widget.js  │                  │  ├── Admin dashboard     │
@@ -106,11 +65,46 @@ User's website                    Your server (one VPS)
                                  └─────────────────────────┘
 ```
 
-1. Your visitor loads `widget.js` from your server — a floating chat button appears
+1. Your visitor loads `widget.js` — a floating chat button appears
 2. They send a message — the widget calls your API
-3. The API searches your knowledge base using vector similarity (RAG)
-4. Top matches + the user's question are sent to Google Gemini
-5. Gemini responds (optionally using custom tools) and the answer appears in the widget
+3. SakurAI searches your knowledge base using vector similarity
+4. Top matches + the question go to Google Gemini
+5. Gemini responds and the answer blooms in the widget 🌸
+
+## Project Structure
+
+```
+.
+├── api/                     # Backend (NestJS)
+│   └── src/
+│       ├── auth/            # JWT authentication
+│       ├── bootstrap/       # Auto-creates default admin on first run
+│       ├── chat/            # Chat endpoint, session history, analytics
+│       ├── knowledge/       # RAG: ingestion, PDF processing, vector search
+│       ├── schemas/         # MongoDB schemas
+│       ├── tenants/         # Tenant CRUD, account management
+│       ├── tools/           # Tool registry and custom tool interface
+│       ├── app.module.ts
+│       └── main.ts
+│
+├── web/                     # Frontend (Angular)
+│   └── src/
+│       ├── app/
+│       │   ├── components/  # Chat widget (dashboard preview)
+│       │   ├── guards/      # Auth route guard
+│       │   ├── interceptors/# JWT token interceptor
+│       │   ├── pages/       # Login, Admin dashboard, Public chat
+│       │   ├── services/    # API clients
+│       │   └── widget/      # Embeddable Web Component (Shadow DOM)
+│       ├── environments/
+│       ├── main.ts
+│       └── widget.ts        # Widget entry point → widget.js
+│
+├── docker-compose.yml
+├── .env.example
+├── DEPLOY.md
+└── TOOLS.md
+```
 
 ## Tech Stack
 
