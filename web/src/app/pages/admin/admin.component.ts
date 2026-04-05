@@ -23,6 +23,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   newKnowledgeContent = '';
   isLoadingKnowledge = false;
   isSaving = false;
+  uploadProgress = '';
 
   activeModal: 'general' | 'appearance' | 'install' | 'tools' | 'knowledge' | 'analytics' | 'account' | null = null;
 
@@ -230,9 +231,9 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   uploadFile(event: any) {
-    const file = event.target.files[0];
-    if (!file) return;
-    this.processUploadedFile(file);
+    const files: File[] = Array.from(event.target.files || []);
+    if (files.length === 0) return;
+    this.processUploadedFiles(files);
     event.target.value = '';
   }
 
@@ -244,34 +245,57 @@ export class AdminComponent implements OnInit, OnDestroy {
   onDrop(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
-    const file = event.dataTransfer?.files[0];
-    if (file) this.processUploadedFile(file);
+    const files: File[] = Array.from(event.dataTransfer?.files || []);
+    if (files.length > 0) this.processUploadedFiles(files);
   }
 
-  private processUploadedFile(file: File) {
+  private async processUploadedFiles(files: File[]) {
     const allowedTypes = ['application/pdf', 'text/markdown'];
     const allowedExtensions = ['.pdf', '.md'];
-    const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
 
-    if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(ext)) {
+    const validFiles = files.filter(file => {
+      const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+      return allowedTypes.includes(file.type) || allowedExtensions.includes(ext);
+    });
+
+    if (validFiles.length === 0) {
       alert('Please upload PDF or Markdown (.md) files only.');
       return;
     }
 
+    if (validFiles.length < files.length) {
+      const skipped = files.length - validFiles.length;
+      alert(`${skipped} file(s) skipped (unsupported format). Processing ${validFiles.length} valid file(s).`);
+    }
+
     this.isLoadingKnowledge = true;
-    this.knowledgeService.uploadFile(this.selectedTenant._id, file).subscribe({
-      next: (res) => {
-        this.isLoadingKnowledge = false;
-        this.loadMemories();
-        const chunksMsg = res.chunks ? ` in ${res.chunks} chunks` : '';
-        alert(`File processed successfully! Learned ${res.chars} characters${chunksMsg}.`);
-      },
-      error: (err) => {
-        console.error(err);
-        alert('Error processing file.');
-        this.isLoadingKnowledge = false;
-      },
-    });
+    let success = 0;
+    let failed = 0;
+
+    for (let i = 0; i < validFiles.length; i++) {
+      const file = validFiles[i];
+      this.uploadProgress = `Uploading ${i + 1} of ${validFiles.length}: ${file.name}`;
+      this.cdr.detectChanges();
+
+      try {
+        await this.knowledgeService.uploadFile(this.selectedTenant._id, file).toPromise();
+        success++;
+      } catch (err) {
+        console.error(`Error uploading ${file.name}:`, err);
+        failed++;
+      }
+    }
+
+    this.isLoadingKnowledge = false;
+    this.uploadProgress = '';
+    this.loadMemories();
+    this.cdr.detectChanges();
+
+    if (failed === 0) {
+      alert(`All ${success} file(s) processed successfully!`);
+    } else {
+      alert(`Done: ${success} file(s) processed, ${failed} failed.`);
+    }
   }
 
   truncate(text: string, maxLength: number = 150): string {

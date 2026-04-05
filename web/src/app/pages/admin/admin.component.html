@@ -393,6 +393,7 @@
                   <input
                     type="file"
                     accept=".pdf,.md"
+                    multiple
                     (change)="uploadFile($event)"
                     [disabled]="isLoadingKnowledge"
                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
@@ -404,11 +405,15 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                     </svg>
-                    Upload File
+                    Upload Files
                   </button>
                 </div>
 
-                <span class="text-xs text-slate-400 ml-auto self-center">or drag & drop a PDF or .md file here</span>
+                @if (uploadProgress) {
+                  <span class="text-xs text-blue-600 ml-auto self-center font-medium">{{ uploadProgress }}</span>
+                } @else {
+                  <span class="text-xs text-slate-400 ml-auto self-center">or drag & drop PDF / .md files here</span>
+                }
               </div>
             </div>
 
@@ -425,7 +430,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                   </svg>
                   <p class="text-slate-500 font-medium">No knowledge stored yet.</p>
-                  <p class="text-sm text-slate-400 mt-1">Add text or upload a file to get started.</p>
+                  <p class="text-sm text-slate-400 mt-1">Add text or upload files to get started.</p>
                 </div>
               }
               @for (memory of agentMemories; track memory._id) {
