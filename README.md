@@ -38,8 +38,7 @@ You don't need a VPS to try things out. Run SakurAI locally with Docker Compose 
 From the admin dashboard at `http://localhost`, go to **Install**, copy the widget snippet, and drop it into your HTML:
 
 ```html
-<script src="http://localhost/widget/widget.js"></script>
-<ai-chat-widget api-key="YOUR_API_KEY" api-url="http://localhost:3000"></ai-chat-widget>
+<script src="http://localhost/widget/widget.js" data-api-key="YOUR_API_KEY" data-api-url="http://localhost:3000"></script>
 ```
 
 ## Production Deployment

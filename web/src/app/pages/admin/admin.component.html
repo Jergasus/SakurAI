@@ -268,24 +268,20 @@
             <div class="space-y-6">
               <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
                 <p class="font-semibold mb-1">How it works</p>
-                <p>Copy the code below and paste it into your website's HTML. The widget will appear as a floating chat button in the bottom-right corner. Your website can be hosted anywhere — it just needs to reach this server.</p>
+                <p>Copy one of the snippets below and paste it into your website's HTML. The widget will appear as a floating chat button in the bottom-right corner. Your website can be hosted anywhere — it just needs to reach this server.</p>
               </div>
 
-              <!-- Script Tag (Recommended) -->
+              <!-- Single Script Tag (Recommended) -->
               <div class="bg-slate-900 rounded-2xl p-6 shadow-inner border border-slate-800">
                 <div class="flex items-center gap-2 mb-3">
                   <span class="bg-emerald-500/20 text-emerald-400 text-xs font-bold px-2 py-1 rounded-full">Recommended</span>
-                  <h4 class="text-sm font-semibold text-slate-300">Script Tag (Web Component)</h4>
+                  <h4 class="text-sm font-semibold text-slate-300">Single Script Tag</h4>
                 </div>
                 <p class="text-sm text-slate-400 mb-4">
-                  Add this code before the <code class="bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded text-xs font-mono">&lt;/body&gt;</code> tag on your website.
+                  Just one line — paste it before <code class="bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded text-xs font-mono">&lt;/body&gt;</code> and you're done.
                 </p>
                 <div class="relative group">
-                  <pre class="text-emerald-400 text-sm font-mono bg-black/50 p-4 rounded-xl overflow-x-auto border border-slate-800 select-all whitespace-pre-wrap break-all">&lt;script src="{{ frontendUrl }}/widget/widget.js"&gt;&lt;/script&gt;
-&lt;ai-chat-widget
-  api-key="{{ selectedTenant.apiKey }}"
-  api-url="{{ frontendUrl }}:3000"&gt;
-&lt;/ai-chat-widget&gt;</pre>
+                  <pre class="text-emerald-400 text-sm font-mono bg-black/50 p-4 rounded-xl overflow-x-auto border border-slate-800 select-all whitespace-pre-wrap break-all">&lt;script src="{{ frontendUrl }}/widget/widget.js" data-api-key="{{ selectedTenant.apiKey }}" data-api-url="{{ frontendUrl }}:3000"&gt;&lt;/script&gt;</pre>
                 </div>
               </div>
 
@@ -304,7 +300,7 @@
                   <h4 class="text-sm font-semibold text-slate-300">Iframe Embed</h4>
                 </div>
                 <p class="text-sm text-slate-400 mb-4">
-                  Use this if you need a simpler integration with no JavaScript.
+                  Use this if your platform doesn't allow custom scripts (some website builders, email, etc).
                 </p>
                 <div class="relative group">
                   <pre class="text-emerald-400 text-sm font-mono bg-black/50 p-4 rounded-xl overflow-x-auto border border-slate-800 select-all whitespace-pre-wrap break-all">&lt;iframe

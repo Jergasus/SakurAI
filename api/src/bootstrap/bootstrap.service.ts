@@ -47,9 +47,10 @@ export class BootstrapService implements OnApplicationBootstrap {
     this.logger.log('================================================');
     this.logger.log('  DEFAULT ADMIN CREATED');
     this.logger.log(`  Email:    ${email}`);
-    this.logger.log(`  Password: ${password}`);
-    this.logger.log(`  API Key:  ${apiKey}`);
+    this.logger.log(`  Password: ${'*'.repeat(password.length)}`);
+    this.logger.log(`  API Key:  ${apiKey.substring(0, 6)}...`);
     this.logger.log('================================================');
+    this.logger.log('Default credentials: admin@localhost / admin123');
     this.logger.log('Change these credentials after first login!');
   }
 }

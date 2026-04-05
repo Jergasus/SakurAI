@@ -1,19 +1,23 @@
-import { Controller, Post, Body, Get, Query, Delete, Param, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query, Delete, Param, UseGuards, Req } from '@nestjs/common';
 import { KnowledgeService } from './knowledge.service';
 import { UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';
+import { IngestTextDto } from './dto/ingest-text.dto';
 const pdfParse = require('pdf-parse');
 
+@ApiTags('Knowledge')
+@ApiBearerAuth()
 @Controller('knowledge')
-@UseGuards(AuthGuard) // Protegemos TODAS las rutas de conocimiento
+@UseGuards(AuthGuard)
 export class KnowledgeController {
   constructor(private readonly knowledgeService: KnowledgeService) {}
 
   // POST localhost:3000/knowledge
   @Post()
-  async create(@Body() body: { tenantId: string; content: string }) {
-    return this.knowledgeService.ingestText(body.tenantId, body.content);
+  async create(@Body() dto: IngestTextDto) {
+    return this.knowledgeService.ingestText(dto.tenantId, dto.content);
   }
 
   // GET localhost:3000/knowledge?tenantId=...
@@ -24,8 +28,8 @@ export class KnowledgeController {
 
   // DELETE localhost:3000/knowledge/:id
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return this.knowledgeService.remove(id);
+  async remove(@Param('id') id: string, @Req() req: any) {
+    return this.knowledgeService.remove(id, req.user.sub);
   }
 
   private chunkText(text: string, maxCharLength: number): string[] {

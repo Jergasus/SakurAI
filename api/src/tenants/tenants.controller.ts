@@ -1,10 +1,11 @@
 import { Controller, Get, Post, Body, Patch, Param, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { TenantsService } from './tenants.service';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { AuthGuard } from '../auth/auth.guard';
 
-// La ruta base será http://localhost:3000/tenants
-@Controller('tenants') 
+@ApiTags('Tenants')
+@Controller('tenants')
 export class TenantsController {
   constructor(private readonly tenantsService: TenantsService) {}
 

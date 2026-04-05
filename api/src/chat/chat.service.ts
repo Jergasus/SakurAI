@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, InternalServerErrorException, Logger } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ForbiddenException, InternalServerErrorException, Logger } from '@nestjs/common';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { TenantsService } from '../tenants/tenants.service';
 import { KnowledgeService } from '../knowledge/knowledge.service';
@@ -21,12 +21,32 @@ export class ChatService {
     this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
   }
 
-  async getSessionHistory(sessionId: string) {
+  async getSessionHistory(sessionId: string, apiKey?: string) {
     const session = await this.chatSessionModel.findOne({ sessionId });
-    return session ? session.history : [];
+    if (!session) return [];
+
+    // If apiKey provided, verify ownership
+    if (apiKey) {
+      const tenant = await this.tenantsService.findByApiKey(apiKey);
+      if (!tenant || session.tenantId.toString() !== tenant.id.toString()) {
+        throw new ForbiddenException('Session does not belong to this tenant');
+      }
+    }
+
+    return session.history;
   }
 
-  async deleteSessionHistory(sessionId: string) {
+  async deleteSessionHistory(sessionId: string, apiKey?: string) {
+    const session = await this.chatSessionModel.findOne({ sessionId });
+    if (!session) return { message: 'History deleted successfully' };
+
+    if (apiKey) {
+      const tenant = await this.tenantsService.findByApiKey(apiKey);
+      if (!tenant || session.tenantId.toString() !== tenant.id.toString()) {
+        throw new ForbiddenException('Session does not belong to this tenant');
+      }
+    }
+
     await this.chatSessionModel.deleteOne({ sessionId });
     return { message: 'History deleted successfully' };
   }
@@ -36,13 +56,19 @@ export class ChatService {
     if (!tenant) throw new UnauthorizedException('Invalid API Key');
 
     let session = await this.chatSessionModel.findOne({ sessionId });
+    if (session && session.tenantId.toString() !== tenant.id.toString()) {
+      throw new ForbiddenException('Session does not belong to this tenant');
+    }
     if (!session) {
       session = new this.chatSessionModel({ sessionId, tenantId: tenant.id, history: [] });
     }
 
     // RAG search
     const relevantInfo = await this.knowledgeService.search(tenant.id, userMessage);
-    const prompt = `RAG CONTEXT:\n${relevantInfo}\n\nUSER QUESTION:\n${userMessage}`;
+    const RAG_MARKER = '___SAKURAI_RAG_CTX___';
+    const prompt = relevantInfo
+      ? `${RAG_MARKER}\n${relevantInfo}\n${RAG_MARKER}\n\n${userMessage}`
+      : userMessage;
 
     // Prepare tools
     const activeTools = this.toolRegistry.getDeclarations(tenant.allowedTools || []);
@@ -83,13 +109,19 @@ export class ChatService {
         const functionCalls = result.response.functionCalls()!;
         const functionResponses: any[] = [];
 
+        const allowedToolIds = tenant.allowedTools || [];
         for (const call of functionCalls) {
           this.logger.log(`Executing tool: ${call.name}`, call.args);
           toolsUsed.push(call.name);
           let functionResponseData = {};
 
           const tool = this.toolRegistry.getTool(call.name);
-          if (tool) {
+          if (!tool) {
+            functionResponseData = { error: 'Unknown tool' };
+          } else if (!allowedToolIds.includes(tool.id)) {
+            this.logger.warn(`Tenant ${tenant.id} tried to use non-allowed tool: ${call.name}`);
+            functionResponseData = { error: 'This tool is not enabled for your agent' };
+          } else {
             try {
               functionResponseData = await tool.execute(call.args, {
                 tenantId: tenant.id,
@@ -98,8 +130,6 @@ export class ChatService {
               this.logger.error(`Error executing tool ${call.name}:`, error);
               functionResponseData = { error: 'Internal error executing the tool' };
             }
-          } else {
-            functionResponseData = { error: 'Unknown tool' };
           }
 
           functionResponses.push({
@@ -113,15 +143,15 @@ export class ChatService {
       const finalHistory = await chatSession.getHistory();
 
       // Clean RAG context from stored history
+      const RAG_MARKER_PATTERN = /___SAKURAI_RAG_CTX___[\s\S]*?___SAKURAI_RAG_CTX___\s*/;
       for (let i = finalHistory.length - 1; i >= 0; i--) {
         const part = finalHistory[i].parts?.[0];
         if (
           finalHistory[i].role === 'user' &&
-          part &&
-          part.text &&
-          part.text.includes('RAG CONTEXT:')
+          part?.text &&
+          part.text.includes('___SAKURAI_RAG_CTX___')
         ) {
-          part.text = userMessage;
+          part.text = part.text.replace(RAG_MARKER_PATTERN, '').trim();
           break;
         }
       }

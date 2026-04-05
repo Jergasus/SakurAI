@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, ForbiddenException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { GoogleGenerativeAI } from '@google/generative-ai';
@@ -120,7 +120,11 @@ export class KnowledgeService {
     return this.knowledgeModel.find({ tenantId }).select('-embedding').exec();
   }
 
-  async remove(id: string) {
+  async remove(id: string, tenantId: string) {
+    const doc = await this.knowledgeModel.findById(id).exec();
+    if (!doc || doc.tenantId.toString() !== tenantId.toString()) {
+      throw new ForbiddenException('Access denied');
+    }
     return this.knowledgeModel.findByIdAndDelete(id).exec();
   }
 }

@@ -66,7 +66,9 @@ export class WidgetElementComponent implements OnInit, OnChanges, AfterViewCheck
     const storageKey = `widget_session_${this.apiKey}`;
     let savedSessionId = localStorage.getItem(storageKey);
     if (!savedSessionId) {
-      savedSessionId = 'sess_w_' + Math.random().toString(36).substring(2, 15);
+      const bytes = new Uint8Array(16);
+      crypto.getRandomValues(bytes);
+      savedSessionId = 'sess_w_' + Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
       localStorage.setItem(storageKey, savedSessionId);
     }
     this.sessionId = savedSessionId;
@@ -132,7 +134,9 @@ export class WidgetElementComponent implements OnInit, OnChanges, AfterViewCheck
     }
 
     const storageKey = `widget_session_${this.apiKey}`;
-    const newSessionId = 'sess_w_' + Math.random().toString(36).substring(2, 15);
+    const bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+    const newSessionId = 'sess_w_' + Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
     localStorage.setItem(storageKey, newSessionId);
     this.sessionId = newSessionId;
 

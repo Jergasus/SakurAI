@@ -13,10 +13,17 @@ import { Tenant, TenantSchema } from '../schemas/tenant.schema';
       global: true,
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        secret: config.get<string>('JWT_SECRET', 'change-me-in-production'),
-        signOptions: { expiresIn: '1d' },
-      }),
+      useFactory: (config: ConfigService) => {
+        const secret = config.get<string>('JWT_SECRET');
+        if (!secret) {
+          if (process.env.NODE_ENV === 'production') {
+            throw new Error('JWT_SECRET environment variable is required in production');
+          }
+          // Only allow default in development
+          return { secret: 'dev-only-secret', signOptions: { expiresIn: '1d' } };
+        }
+        return { secret, signOptions: { expiresIn: '1d' } };
+      },
     }),
   ],
   providers: [AuthService],
