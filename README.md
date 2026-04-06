@@ -50,7 +50,8 @@ docker-compose up -d --build
 
 Open **http://localhost** and log in with `admin@localhost` / `admin123`.
 
-> **Important:** Change these credentials right away via the **Account** tab in the dashboard.
+> [!WARNING]
+> Change the default credentials immediately via the **Account** tab in the dashboard. Also set a strong `JWT_SECRET` in your `.env` before exposing the app to the internet.
 
 ## Embedding the Widget
 
@@ -63,6 +64,9 @@ From the admin dashboard, go to **Install**, copy the snippet, and drop it into 
 ```
 
 That's it — a floating chat button appears in the bottom-right corner of your site.
+
+> [!TIP]
+> Replace `localhost` with your server's domain or IP when deploying to production. The widget works on any website — WordPress, Shopify, static HTML, etc.
 
 ## How It Works
 
@@ -147,6 +151,9 @@ All configuration is done via environment variables in `.env`. See [`.env.exampl
 | `CORS_ALLOW_ALL` | `true` | Allow widget embedding from any domain |
 | `THROTTLE_LIMIT` | `60` | Max requests per minute per IP |
 | `DEFAULT_ADMIN_*` | `admin@localhost` / `admin123` | First-run seed credentials |
+
+> [!NOTE]
+> The default `VECTOR_SEARCH_MODE=local` uses in-memory cosine similarity, which works well for small-to-medium knowledge bases. For 5,000+ documents, switch to `atlas` mode with a MongoDB Atlas vector search index.
 
 For production setup (HTTPS, MongoDB Atlas, CORS), see the [Deployment Guide](DEPLOY.md).
 

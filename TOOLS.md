@@ -85,6 +85,9 @@ export class ToolRegistryService {
 
 ### 3. Enable it in the dashboard
 
+> [!IMPORTANT]
+> After adding or modifying tools, you must restart the API container for changes to take effect.
+
 1. Restart the API (`docker-compose restart api`)
 2. Go to the admin dashboard → **Skills (Tools)**
 3. Your new tool will appear — check the box to enable it
@@ -118,7 +121,9 @@ interface AgentTool {
 
 ## Tips
 
-- **Write good descriptions.** Gemini uses the `description` field to decide when to call the tool. Be specific: "Checks real-time inventory for a product in the warehouse database" is better than "Checks stock."
+> [!TIP]
+> Write good descriptions — Gemini uses the `description` field to decide when to call the tool. Be specific: *"Checks real-time inventory for a product in the warehouse database"* is better than *"Checks stock."*
+
 - **Keep return values simple.** Return plain objects with descriptive keys. Gemini reads the JSON and turns it into a natural response.
 - **Handle errors gracefully.** If your API call fails, return `{ error: "Could not fetch weather data" }` instead of throwing — Gemini will tell the user something went wrong.
 - **Multiple tools in one file.** Export an array, so you can group related tools together (e.g., `get_weather` and `get_forecast` in the same file).

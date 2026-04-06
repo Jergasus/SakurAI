@@ -32,7 +32,8 @@ That's it. The stack includes MongoDB, the API, and the web dashboard — all ru
    - Password: `admin123`
 3. You'll land on the admin dashboard where you can configure your agent
 
-**Important:** Change your password immediately from the **Account** section in the dashboard header.
+> [!CAUTION]
+> Change your password immediately from the **Account** section in the dashboard header. The default credentials (`admin@localhost` / `admin123`) are publicly known.
 
 ## Using the Admin Dashboard
 
@@ -48,7 +49,8 @@ That's it. The stack includes MongoDB, the API, and the web dashboard — all ru
 
 This is the core use case: you deploy this project **once** on a server, then paste a small snippet into your **existing** website (WordPress, Shopify, plain HTML — anything). You don't need to modify your website's backend.
 
-If you are just testing, you can use the `localhost` output from the admin panel and paste it into another web project running locally on your machine.
+> [!TIP]
+> If you are just testing locally, you can use the `localhost` output from the admin panel and paste it into another web project running on your machine.
 
 ### Step 1: Deploy this project
 
@@ -74,6 +76,9 @@ An iframe embed option is also available for simpler integrations.
 ## Going to Production
 
 The default setup uses a local MongoDB container, which is fine for trying things out and for small deployments. For production, consider these upgrades:
+
+> [!IMPORTANT]
+> For production deployments, you **must** set a unique `JWT_SECRET` and change the default admin password. Without this, anyone who knows the defaults can access your dashboard.
 
 ### Use HTTPS
 
@@ -117,11 +122,15 @@ For larger knowledge bases (5,000+ documents) or if you want managed backups and
    VECTOR_SEARCH_MODE=atlas
    ```
 
-For most users with a few hundred knowledge entries, the default local mode works perfectly fine in production.
+> [!TIP]
+> For most users with a few hundred knowledge entries, the default local mode works perfectly fine in production. You only need Atlas if you have 5,000+ documents or want managed backups.
 
 ### CORS Configuration
 
-By default, `CORS_ALLOW_ALL=true` allows the widget to be embedded on any domain. This is necessary and safe — the API key is the security boundary, not CORS (same as Intercom, Crisp, and every embeddable widget). To restrict to specific domains:
+> [!NOTE]
+> By default, `CORS_ALLOW_ALL=true` allows the widget to be embedded on any domain. This is intentional and safe — the API key is the security boundary, not CORS (same model as Intercom, Crisp, and every embeddable widget).
+
+To restrict to specific domains:
 
 ```env
 CORS_ALLOW_ALL=false
