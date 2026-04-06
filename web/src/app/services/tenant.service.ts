@@ -7,7 +7,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class TenantService {
-  private apiUrl = `${environment.apiUrl}/tenants`; // Tu backend
+  private apiUrl = `${environment.apiUrl}/tenants`;
 
   constructor(private http: HttpClient) {}
 
@@ -15,12 +15,10 @@ export class TenantService {
     return this.http.get<any>(this.apiUrl);
   }
 
-  // 2. Crear un nuevo agente
   createTenant(data: any): Observable<any> {
     return this.http.post<any>(this.apiUrl, data);
   }
 
-  // 👉 NUEVA FUNCIÓN PARA EDITAR
   updateTenant(id: string, data: any): Observable<any> {
     return this.http.patch<any>(`${this.apiUrl}/${id}`, data);
   }

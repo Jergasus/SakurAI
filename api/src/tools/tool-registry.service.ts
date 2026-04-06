@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { FunctionDeclaration } from '@google/generative-ai';
 import { AgentTool } from './interfaces/tool.interface';
-import { reverse1999Tools } from './implementations/reverse1999.tools';
 
 @Injectable()
 export class ToolRegistryService {
@@ -9,7 +8,7 @@ export class ToolRegistryService {
   private toolsByFunctionName = new Map<string, AgentTool>();
 
   constructor() {
-    reverse1999Tools.forEach(tool => this.registerTool(tool));
+    // Register your custom tools here. See TOOLS.md for instructions.
   }
 
   registerTool(tool: AgentTool) {

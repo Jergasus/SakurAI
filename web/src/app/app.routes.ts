@@ -5,12 +5,12 @@ import { PublicChatComponent } from './pages/public-chat/public-chat.component';
 import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
-  { path: 'login', component: LoginComponent }, // <--- Ruta nueva
-  { 
-    path: 'admin', 
+  { path: 'login', component: LoginComponent },
+  {
+    path: 'admin',
     component: AdminComponent,
-    canActivate: [authGuard] // 👉 AÑADIMOS EL GUARDIÁN AQUÍ
+    canActivate: [authGuard]
   },
   { path: 'widget/:apiKey', component: PublicChatComponent },
-  { path: '', redirectTo: '/login', pathMatch: 'full' } // <--- Ahora al entrar, te manda al login
+  { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];
