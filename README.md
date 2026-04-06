@@ -37,6 +37,9 @@ Drop a single `<script>` tag into any site and you get a polished AI assistant t
 - **Multi-Tenant Ready** — Run multiple distinct agents with separate knowledge bases from a single deployment.
 - **Rate Limiting & Security** — Built-in throttling, Helmet.js security headers, JWT auth, and bcrypt password hashing.
 
+> [!NOTE]
+> SakurAI currently uses **Google Gemini** as its AI provider (chat, embeddings, and tool calling). Multi-provider support (OpenAI, Claude, etc.) is not available yet — contributions are welcome!
+
 ## Quick Start
 
 You only need **Docker** and a free **Google Gemini API Key**.
