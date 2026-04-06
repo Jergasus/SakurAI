@@ -17,7 +17,6 @@ export class ChatWidgetComponent implements AfterViewChecked, OnInit {
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
 
   isOpen = false;
-  isFullscreen = false;
   unreadCount = 1;
   messages: { text: string; html: string; isUser: boolean }[] = [];
   rawHistory: any[] = [];
@@ -105,11 +104,6 @@ export class ChatWidgetComponent implements AfterViewChecked, OnInit {
     if (this.isOpen) {
       this.unreadCount = 0;
     }
-    this.cdr.detectChanges();
-  }
-
-  toggleFullscreen() {
-    this.isFullscreen = !this.isFullscreen;
     this.cdr.detectChanges();
   }
 

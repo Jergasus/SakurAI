@@ -1,9 +1,7 @@
-<div class="fixed z-50 font-sans transition-all duration-300"
-     [ngClass]="isFullscreen ? 'inset-0' : 'bottom-6 right-6'">
-  
+<div class="fixed z-50 font-sans bottom-6 right-6">
+
   @if (isOpen) {
-    <div class="bg-white shadow-2xl border border-slate-200 overflow-hidden flex flex-col animate-fade-in-up transition-all duration-300"
-         [ngClass]="isFullscreen ? 'w-full h-full rounded-none' : 'w-80 sm:w-96 rounded-2xl h-[550px] mb-4'">
+    <div class="bg-white shadow-2xl border border-slate-200 overflow-hidden flex flex-col animate-fade-in-up w-80 sm:w-96 rounded-2xl h-[550px] mb-4">
       
       <!-- Header -->
       <div [style.backgroundColor]="currentAgentData?.primaryColor || '#2563EB'" class="p-4 text-white flex flex-col gap-2 transition-colors duration-300 shadow-md z-10">
@@ -25,18 +23,6 @@
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
-            </button>
-            <!-- Fullscreen / Minimize -->
-            <button (click)="toggleFullscreen()" class="w-8 h-8 rounded-full hover:bg-white/20 flex items-center justify-center transition-colors" [title]="isFullscreen ? 'Minimize' : 'Fullscreen'">
-              @if (!isFullscreen) {
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                </svg>
-              } @else {
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" />
-                </svg>
-              }
             </button>
             <button (click)="toggleChat()" class="w-8 h-8 rounded-full hover:bg-white/20 flex items-center justify-center transition-colors" title="Close">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

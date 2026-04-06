@@ -5,6 +5,8 @@ import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { ChatService } from '../../services/chat.service';
 import { environment } from '../../../environments/environment';
+import { marked } from 'marked';
+import katex from 'katex';
 
 @Component({
   selector: 'app-public-chat',
@@ -19,7 +21,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
   agentData: any = null;
   sessionId: string = '';
 
-  messages: { text: string; isUser: boolean }[] = [];
+  messages: { text: string; html: string; isUser: boolean }[] = [];
   rawHistory: any[] = [];
   newMessage = '';
   isLoading = false;
@@ -55,20 +57,24 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
             this.messages = [];
             for (const msg of this.rawHistory) {
               if (msg.parts && msg.parts[0] && msg.parts[0].text) {
+                const text = msg.parts[0].text;
                 this.messages.push({
-                  text: msg.parts[0].text,
+                  text,
+                  html: msg.role === 'user' ? text : this.renderMarkdown(text),
                   isUser: msg.role === 'user'
                 });
               }
             }
           } else {
-            this.messages = [{ text: `Hi! I'm ${data.name}. How can I help you?`, isUser: false }];
+            const welcomeText = `Hi! I'm ${data.name}. How can I help you?`;
+            this.messages = [{ text: welcomeText, html: welcomeText, isUser: false }];
           }
           this.isLoading = false;
           this.cdr.detectChanges();
         },
         error: () => {
-          this.messages = [{ text: `Hi! I'm ${data.name}. How can I help you?`, isUser: false }];
+          const welcomeText = `Hi! I'm ${data.name}. How can I help you?`;
+          this.messages = [{ text: welcomeText, html: welcomeText, isUser: false }];
           this.rawHistory = [];
           this.isLoading = false;
           this.cdr.detectChanges();
@@ -95,7 +101,8 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
     localStorage.setItem(storageKey, newSessionId);
     this.sessionId = newSessionId;
 
-    this.messages = [{ text: `Hi! I'm ${this.agentData?.name || 'your assistant'}. How can I help you?`, isUser: false }];
+    const welcomeText = `Hi! I'm ${this.agentData?.name || 'your assistant'}. How can I help you?`;
+    this.messages = [{ text: welcomeText, html: welcomeText, isUser: false }];
     this.rawHistory = [];
     this.cdr.detectChanges();
   }
@@ -105,7 +112,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
     
     const userMsg = this.newMessage;
 
-    this.messages = [...this.messages, { text: userMsg, isUser: true }];
+    this.messages = [...this.messages, { text: userMsg, html: userMsg, isUser: true }];
     this.rawHistory = [...this.rawHistory, { role: 'user', parts: [{ text: userMsg }] }];
     
     this.newMessage = '';
@@ -114,7 +121,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
 
     this.chatService.sendMessage(this.apiKey, userMsg, this.sessionId).subscribe({
       next: (res) => {
-        this.messages = [...this.messages, { text: res.reply, isUser: false }];
+        this.messages = [...this.messages, { text: res.reply, html: this.renderMarkdown(res.reply), isUser: false }];
         this.rawHistory = res.history || [];
         this.isLoading = false;
         if (!this.isOpen) {
@@ -123,7 +130,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
         this.cdr.detectChanges();
       },
       error: () => {
-        this.messages = [...this.messages, { text: 'Connection error.', isUser: false }];
+        this.messages = [...this.messages, { text: 'Connection error.', html: 'Connection error.', isUser: false }];
         this.isLoading = false;
         if (!this.isOpen) {
           this.unreadCount++;
@@ -137,5 +144,25 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
     try {
       this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
     } catch(err) {}
+  }
+
+  private renderMarkdown(text: string): string {
+    let processed = text.replace(/\$\$([\s\S]*?)\$\$/g, (_match, latex) => {
+      try {
+        return '<div class="katex-block">' + katex.renderToString(latex.trim(), { displayMode: true, throwOnError: false }) + '</div>';
+      } catch {
+        return `<div class="katex-block"><code>${latex.trim()}</code></div>`;
+      }
+    });
+
+    processed = processed.replace(/\$([^\$\n]+?)\$/g, (_match, latex) => {
+      try {
+        return katex.renderToString(latex.trim(), { displayMode: false, throwOnError: false });
+      } catch {
+        return `<code>${latex.trim()}</code>`;
+      }
+    });
+
+    return marked.parse(processed, { async: false, breaks: true }) as string;
   }
 }

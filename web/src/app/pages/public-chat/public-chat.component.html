@@ -45,7 +45,11 @@
             <div [ngClass]="msg.isUser ? 'rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl text-white shadow-md' : 'rounded-tl-2xl rounded-tr-2xl rounded-br-2xl bg-white border border-slate-200 text-slate-800 shadow-sm'" 
                  class="max-w-[75%] p-3.5 text-sm leading-relaxed"
                  [style.backgroundColor]="msg.isUser ? (agentData.primaryColor || '#2563EB') : '#ffffff'">
-              {{ msg.text }}
+              @if (msg.isUser) {
+                {{ msg.text }}
+              } @else {
+                <div [innerHTML]="msg.html"></div>
+              }
             </div>
           </div>
         }
