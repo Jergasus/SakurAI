@@ -20,7 +20,7 @@
           Account
         </button>
         <button
-          onclick="localStorage.clear(); window.location.href = '/login';"
+          (click)="logout()"
           class="bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-lg font-medium hover:bg-slate-50 hover:text-red-600 transition-all shadow-sm flex items-center gap-2"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

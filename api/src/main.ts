@@ -7,24 +7,26 @@ import helmet from 'helmet';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.use(helmet());
+
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
     forbidNonWhitelisted: true,
     transform: true,
   }));
 
-  // Swagger API docs
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('SakurAI API')
-    .setDescription('API for the SakurAI self-hosted AI chat agent')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .addApiKey({ type: 'apiKey', name: 'x-api-key', in: 'header' }, 'api-key')
-    .build();
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api/docs', app, document);
-
-  app.use(helmet());
+  // Swagger API docs (disabled in production)
+  if (process.env.NODE_ENV !== 'production') {
+    const swaggerConfig = new DocumentBuilder()
+      .setTitle('SakurAI API')
+      .setDescription('API for the SakurAI self-hosted AI chat agent')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .addApiKey({ type: 'apiKey', name: 'x-api-key', in: 'header' }, 'api-key')
+      .build();
+    const document = SwaggerModule.createDocument(app, swaggerConfig);
+    SwaggerModule.setup('api/docs', app, document);
+  }
 
   const allowAll = process.env.CORS_ALLOW_ALL === 'true';
   const allowedOrigins = (process.env.ALLOWED_ORIGINS || process.env.FRONTEND_URL || 'http://localhost:4200')

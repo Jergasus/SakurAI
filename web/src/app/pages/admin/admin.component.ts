@@ -1,9 +1,11 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { TenantService } from '../../services/tenant.service';
 import { KnowledgeService } from '../../services/knowledge.service';
 import { ChatService } from '../../services/chat.service';
+import { AuthService } from '../../services/auth.service';
 import { ChatWidgetComponent } from '../../components/chat-widget/chat-widget.component';
 
 @Component({
@@ -43,6 +45,8 @@ export class AdminComponent implements OnInit, OnDestroy {
     private knowledgeService: KnowledgeService,
     private cdr: ChangeDetectorRef,
     private chatService: ChatService,
+    private authService: AuthService,
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -292,6 +296,11 @@ export class AdminComponent implements OnInit, OnDestroy {
     } else {
       alert(`Done: ${success} file(s) processed, ${failed} failed.`);
     }
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 
   truncate(text: string, maxLength: number = 150): string {

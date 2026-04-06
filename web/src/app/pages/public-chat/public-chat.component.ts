@@ -17,13 +17,13 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
   
   apiKey: string = '';
   agentData: any = null;
-  sessionId: string = ''; // <--- ID de sesión único para este usuario
-  
+  sessionId: string = '';
+
   messages: { text: string; isUser: boolean }[] = [];
-  rawHistory: any[] = []; // <--- Historial crudo para Gemini
+  rawHistory: any[] = [];
   newMessage = '';
   isLoading = false;
-  isOpen = false; // Controla si la ventana está abierta o es solo el botón
+  isOpen = false;
   unreadCount = 1;
 
   constructor(
@@ -34,23 +34,18 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
   ) {}
 
   ngOnInit() {
-    // 1. Sacamos la API Key de la URL (ej: /widget/sk_12345)
     this.apiKey = this.route.snapshot.paramMap.get('apiKey') || '';
-    
-    // 2. Generar o recuperar un ID de sesión único para este widget
+
     const storageKey = `public_chat_session_${this.apiKey}`;
     let savedSessionId = localStorage.getItem(storageKey);
     if (!savedSessionId) {
-      savedSessionId = 'sess_pub_' + Math.random().toString(36).substring(2, 15);
+      savedSessionId = 'sess_pub_' + Array.from(crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2, '0')).join('');
       localStorage.setItem(storageKey, savedSessionId);
     }
     this.sessionId = savedSessionId;
 
-    // 3. Pedimos los colores y el nombre al backend
     this.http.get<any>(`${environment.apiUrl}/tenants/public/${this.apiKey}`).subscribe(data => {
       this.agentData = data;
-      
-      // 4. Cargar historial desde el backend
       this.isLoading = true;
       this.chatService.getHistory(this.sessionId).subscribe({
         next: (history) => {
@@ -91,14 +86,12 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
   }
 
   resetChat() {
-    // Borramos la sesión actual en la base de datos
     if (this.sessionId) {
       this.chatService.deleteHistory(this.sessionId).subscribe();
     }
 
-    // Borramos la sesión actual y creamos una nueva en el navegador
     const storageKey = `public_chat_session_${this.apiKey}`;
-    const newSessionId = 'sess_pub_' + Math.random().toString(36).substring(2, 15);
+    const newSessionId = 'sess_pub_' + Array.from(crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2, '0')).join('');
     localStorage.setItem(storageKey, newSessionId);
     this.sessionId = newSessionId;
 

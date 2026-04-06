@@ -6,7 +6,6 @@ import { Knowledge, KnowledgeSchema } from '../schemas/knowledge.schema';
 
 @Module({
   imports: [
-    // Habilitamos el acceso a la colección 'Knowledge' solo para este módulo
     MongooseModule.forFeature([{ name: Knowledge.name, schema: KnowledgeSchema }]),
   ],
   controllers: [KnowledgeController],

@@ -1,4 +1,4 @@
-# Quick Start
+# Deployment Guide
 
 Self-host your own AI chat agent with RAG capabilities in under 5 minutes.
 
@@ -12,7 +12,7 @@ Self-host your own AI chat agent with RAG capabilities in under 5 minutes.
 
 ```bash
 # 1. Clone and enter the project
-git clone <your-repo-url> && cd saas-agents
+git clone https://github.com/Jergasus/SakurAI.git && cd SakurAI
 
 # 2. Configure environment (only GEMINI_API_KEY is required)
 cp .env.example .env

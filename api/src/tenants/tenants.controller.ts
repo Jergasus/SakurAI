@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, UseGuards, Req, ForbiddenExc
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { TenantsService } from './tenants.service';
 import { CreateTenantDto } from './dto/create-tenant.dto';
+import { UpdateTenantDto } from './dto/update-tenant.dto';
 import { AuthGuard } from '../auth/auth.guard';
 
 @ApiTags('Tenants')
@@ -26,7 +27,7 @@ export class TenantsController {
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateData: any, @Req() req: any) {
+  update(@Param('id') id: string, @Body() updateData: UpdateTenantDto, @Req() req: any) {
     if (id !== req.user.sub) throw new ForbiddenException('You can only update your own tenant');
     return this.tenantsService.update(id, updateData);
   }

@@ -174,7 +174,7 @@ export class ChatService {
         history: finalHistory,
       };
     } catch (error) {
-      console.error('Error communicating with Gemini:', error);
+      this.logger.error('Error communicating with Gemini:', error);
       throw new InternalServerErrorException('The agent encountered an error. Please try again.');
     }
   }

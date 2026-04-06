@@ -1,6 +1,6 @@
-import { Controller, Post, Body, Get, Query, Delete, Param, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Body, Get, Delete, Param, UseGuards, Req } from '@nestjs/common';
 import { KnowledgeService } from './knowledge.service';
-import { UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
+import { UseInterceptors, UploadedFile, BadRequestException, Logger } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';
@@ -12,21 +12,20 @@ const pdfParse = require('pdf-parse');
 @Controller('knowledge')
 @UseGuards(AuthGuard)
 export class KnowledgeController {
+  private readonly logger = new Logger(KnowledgeController.name);
+
   constructor(private readonly knowledgeService: KnowledgeService) {}
 
-  // POST localhost:3000/knowledge
   @Post()
   async create(@Body() dto: IngestTextDto, @Req() req: any) {
     return this.knowledgeService.ingestText(req.user.sub, dto.content);
   }
 
-  // GET localhost:3000/knowledge — returns only the logged-in user's knowledge
   @Get()
   async findAll(@Req() req: any) {
     return this.knowledgeService.findAll(req.user.sub);
   }
 
-  // DELETE localhost:3000/knowledge/:id
   @Delete(':id')
   async remove(@Param('id') id: string, @Req() req: any) {
     return this.knowledgeService.remove(id, req.user.sub);
@@ -52,9 +51,8 @@ export class KnowledgeController {
     return chunks;
   }
 
-  // 👉 NUEVO: Endpoint para procesar Archivos (PDF)
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file')) // NestJS atrapa el archivo que viene en el formulario
+  @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 10 * 1024 * 1024 } })) // 10 MB max
   async uploadDocument(
     @UploadedFile() file: Express.Multer.File,
     @Req() req: any,
@@ -66,7 +64,6 @@ export class KnowledgeController {
 
     let extractedText = '';
 
-    // 1. EXTRAER TEXTO SEGÚN EL TIPO DE ARCHIVO
     try {
       if (file.mimetype === 'application/pdf') {
         const pdfData = await pdfParse(file.buffer);
@@ -78,21 +75,19 @@ export class KnowledgeController {
       }
 
       const fileType = file.originalname?.endsWith('.md') ? 'markdown' : 'pdf';
-      console.log(`📄 ${fileType.toUpperCase()} leído con éxito. Caracteres extraídos: ${extractedText.length}`);
+      this.logger.log(`${fileType.toUpperCase()} processed: ${extractedText.length} characters extracted`);
 
-      // 2. GUARDAR EL TEXTO EN EL RAG (Procesamiento en Lotes / Batching)
       const chunks = this.chunkText(extractedText, 1000);
-      const batchSize = 5; // Procesamos de 5 en 5 para no saturar la API de Google
-      
+      const batchSize = 5;
+
       for (let i = 0; i < chunks.length; i += batchSize) {
         const batch = chunks.slice(i, i + batchSize);
-        
-        // Ejecutamos las 5 peticiones a la vez (en paralelo)
+
         await Promise.all(
           batch.map(chunk => this.knowledgeService.ingestText(tenantId, chunk, fileType))
         );
         
-        console.log(`Procesados ${Math.min(i + batchSize, chunks.length)} de ${chunks.length} fragmentos...`);
+        this.logger.log(`Processed ${Math.min(i + batchSize, chunks.length)} of ${chunks.length} chunks`);
       }
 
       return {
@@ -102,7 +97,7 @@ export class KnowledgeController {
       };
 
     } catch (error) {
-      console.error('Error leyendo el archivo:', error);
+      this.logger.error('Error processing uploaded file:', error);
       throw new BadRequestException('Could not process the file. Is it corrupted?');
     }
   }

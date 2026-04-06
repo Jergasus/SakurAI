@@ -24,12 +24,11 @@ export class ChatWidgetComponent implements AfterViewChecked, OnInit {
   newMessage = '';
   isLoading = false;
 
-  // Nuevas variables para el selector
   tenants: any[] = [];
   selectedApiKey: string = '';
-  currentAgentName: string = 'Selecciona un Agente';
+  currentAgentName: string = 'Select an Agent';
   currentAgentData: any = null;
-  sessionId: string = ''; // <--- ID de sesión único para este usuario y agente
+  sessionId: string = '';
 
   constructor(
     private chatService: ChatService,
@@ -38,21 +37,17 @@ export class ChatWidgetComponent implements AfterViewChecked, OnInit {
   ) {}
 
   ngOnInit() {
-    // 1. Miramos quién ha iniciado sesión
     const myTenantId = localStorage.getItem('tenantId');
 
     this.tenantService.getTenants().subscribe(data => {
       this.tenants = data;
-      
-      // 2. Buscamos automáticamente TU agente en la base de datos
+
       const myAgent = this.tenants.find(t => t._id === myTenantId);
-      
+
       if (myAgent) {
-        // 3. Lo seleccionamos sin que tengas que hacer clic en nada
         this.selectAgent(myAgent);
         this.cdr.detectChanges();
       } else if (this.tenants.length > 0) {
-        // (Por si acaso no estás logueado, cogemos el primero)
         this.selectAgent(this.tenants[0]);
       }
     });
@@ -63,22 +58,19 @@ export class ChatWidgetComponent implements AfterViewChecked, OnInit {
     this.currentAgentName = tenant.name;
     this.currentAgentData = tenant;
     
-    // 1. Generar o recuperar un ID de sesión único para este agente
     const storageKey = `chat_session_${tenant._id}`;
     let savedSessionId = localStorage.getItem(storageKey);
     if (!savedSessionId) {
-      savedSessionId = 'sess_' + Math.random().toString(36).substring(2, 15);
+      savedSessionId = 'sess_' + Array.from(crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2, '0')).join('');
       localStorage.setItem(storageKey, savedSessionId);
     }
     this.sessionId = savedSessionId;
 
-    // 2. Cargar historial desde el backend
     this.isLoading = true;
     this.chatService.getHistory(this.sessionId).subscribe({
       next: (history) => {
         this.rawHistory = history || [];
-        
-        // Reconstruir los mensajes visuales a partir del historial de Gemini
+
         if (this.rawHistory.length > 0) {
           this.messages = [];
           for (const msg of this.rawHistory) {
@@ -122,15 +114,13 @@ export class ChatWidgetComponent implements AfterViewChecked, OnInit {
   }
 
   resetChat() {
-    // Borramos la sesión actual en la base de datos
     if (this.sessionId) {
       this.chatService.deleteHistory(this.sessionId).subscribe();
     }
 
-    // Borramos la sesión actual y creamos una nueva en el navegador
     if (this.currentAgentData) {
       const storageKey = `chat_session_${this.currentAgentData._id}`;
-      const newSessionId = 'sess_' + Math.random().toString(36).substring(2, 15);
+      const newSessionId = 'sess_' + Array.from(crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2, '0')).join('');
       localStorage.setItem(storageKey, newSessionId);
       this.sessionId = newSessionId;
     }
@@ -145,21 +135,16 @@ export class ChatWidgetComponent implements AfterViewChecked, OnInit {
     
     const userMsg = this.newMessage;
 
-    // 1. Añadimos el mensaje a la UI
     this.messages = [...this.messages, { text: userMsg, html: userMsg, isUser: true }];
-    
-    // 2. Añadimos el mensaje al historial crudo (rawHistory) para Gemini (optimista)
     this.rawHistory = [...this.rawHistory, { role: 'user', parts: [{ text: userMsg }] }];
 
     this.newMessage = '';
     this.isLoading = true;
     this.cdr.detectChanges();
 
-    // 3. Enviamos el mensaje y el ID de sesión al backend
     this.chatService.sendMessage(this.selectedApiKey, userMsg, this.sessionId).subscribe({
       next: (res) => {
         this.messages = [...this.messages, { text: res.reply, html: this.renderMarkdown(res.reply), isUser: false }];
-        // 4. Actualizamos el historial con la respuesta completa del backend
         this.rawHistory = res.history || [];
         this.isLoading = false;
 
@@ -192,9 +177,7 @@ export class ChatWidgetComponent implements AfterViewChecked, OnInit {
     } catch(err) { }
   }
 
-  /** Convierte markdown + LaTeX ($..$ y $$..$$) a HTML listo para renderizar */
   private renderMarkdown(text: string): string {
-    // 1. Procesamos bloques de LaTeX ($$...$$) ANTES de que marked los rompa
     let processed = text.replace(/\$\$([\s\S]*?)\$\$/g, (_match, latex) => {
       try {
         return '<div class="katex-block">' + katex.renderToString(latex.trim(), { displayMode: true, throwOnError: false }) + '</div>';
@@ -203,7 +186,6 @@ export class ChatWidgetComponent implements AfterViewChecked, OnInit {
       }
     });
 
-    // 2. Procesamos LaTeX inline ($...$)
     processed = processed.replace(/\$([^\$\n]+?)\$/g, (_match, latex) => {
       try {
         return katex.renderToString(latex.trim(), { displayMode: false, throwOnError: false });
@@ -212,8 +194,6 @@ export class ChatWidgetComponent implements AfterViewChecked, OnInit {
       }
     });
 
-    // 3. Procesamos el markdown
-    const html = marked.parse(processed, { async: false, breaks: true }) as string;
-    return html;
+    return marked.parse(processed, { async: false, breaks: true }) as string;
   }
 }

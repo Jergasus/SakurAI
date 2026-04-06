@@ -8,31 +8,22 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class TenantsService {
-  // Aquí "inyectamos" el modelo de Mongoose que creamos antes
   constructor(
     @InjectModel(Tenant.name) private tenantModel: Model<TenantDocument>,
   ) {}
 
-  // Función para CREAR un agente
   async create(createTenantDto: CreateTenantDto) {
-    
-    // 1. Generamos una API Key súper segura (estilo Stripe u OpenAI)
-    // Ejemplo de resultado: sk_a1b2c3d4e5f6...
     const generatedApiKey = 'sk_' + crypto.randomBytes(24).toString('hex');
 
-    // 2. Juntamos los datos que mandó Angular + la API Key generada
     const newTenant = new this.tenantModel({
       ...createTenantDto,
       apiKey: generatedApiKey,
     });
 
-    // 3. Lo guardamos físicamente en MongoDB y devolvemos el resultado
     return await newTenant.save();
   }
 
-  // Nueva función para ACTUALIZAR un agente
   async update(id: string, updateData: any) {
-    // Hemos cambiado 'new: true' por 'returnDocument: "after"'
     return await this.tenantModel.findByIdAndUpdate(id, updateData, { returnDocument: 'after' }).exec();
   }
 
