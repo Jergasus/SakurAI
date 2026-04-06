@@ -50,6 +50,9 @@ export class TenantsService {
       if (!payload.currentPassword) {
         throw new BadRequestException('Current password is required');
       }
+      if (payload.newPassword.length < 6) {
+        throw new BadRequestException('New password must be at least 6 characters');
+      }
       const isMatch = await bcrypt.compare(payload.currentPassword, tenant.password);
       if (!isMatch) throw new UnauthorizedException('Current password is incorrect');
       tenant.password = await bcrypt.hash(payload.newPassword, 10);
