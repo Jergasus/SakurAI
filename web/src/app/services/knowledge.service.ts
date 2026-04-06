@@ -11,22 +11,20 @@ export class KnowledgeService {
 
   constructor(private http: HttpClient) {}
 
-  // Enviar el texto para que Gemini lo convierta en Vector y lo guarde
-  addKnowledge(tenantId: string, content: string): Observable<any> {
-    return this.http.post<any>(this.apiUrl, { tenantId, content });
+  addKnowledge(content: string): Observable<any> {
+    return this.http.post<any>(this.apiUrl, { content });
   }
 
-  getAll(tenantId: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}?tenantId=${tenantId}`);
+  getAll(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
   }
 
   delete(id: string): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
 
-  uploadFile(tenantId: string, file: File): Observable<any> {
+  uploadFile(file: File): Observable<any> {
     const formData = new FormData();
-    formData.append('tenantId', tenantId);
     formData.append('file', file);
     return this.http.post<any>(`${this.apiUrl}/upload`, formData);
   }

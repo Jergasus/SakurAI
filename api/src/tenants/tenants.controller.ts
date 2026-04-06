@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, UseGuards, Req, ForbiddenException } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { TenantsService } from './tenants.service';
 import { CreateTenantDto } from './dto/create-tenant.dto';
@@ -9,31 +9,33 @@ import { AuthGuard } from '../auth/auth.guard';
 export class TenantsController {
   constructor(private readonly tenantsService: TenantsService) {}
 
-  // Cuando Angular haga un POST a /tenants, ejecutamos esto:
   @UseGuards(AuthGuard)
+  @ApiBearerAuth()
   @Post()
   create(@Body() createTenantDto: CreateTenantDto) {
-    // Le pasamos el paquete de datos al "trabajador" (Service)
     return this.tenantsService.create(createTenantDto);
   }
 
-  // Cuando Angular haga un GET a /tenants, devolvemos la lista de clientes:
   @UseGuards(AuthGuard)
+  @ApiBearerAuth()
   @Get()
-  findAll() {
-    return this.tenantsService.findAll();
+  findOwn(@Req() req: any) {
+    return this.tenantsService.findById(req.user.sub);
   }
 
-  // 👉 NUEVA RUTA PARA EDITAR (PATCH /tenants/id)
   @UseGuards(AuthGuard)
+  @ApiBearerAuth()
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateData: any) {
+  update(@Param('id') id: string, @Body() updateData: any, @Req() req: any) {
+    if (id !== req.user.sub) throw new ForbiddenException('You can only update your own tenant');
     return this.tenantsService.update(id, updateData);
   }
 
   @UseGuards(AuthGuard)
+  @ApiBearerAuth()
   @Patch(':id/account')
-  updateAccount(@Param('id') id: string, @Body() payload: { email?: string; currentPassword?: string; newPassword?: string }) {
+  updateAccount(@Param('id') id: string, @Body() payload: { email?: string; currentPassword?: string; newPassword?: string }, @Req() req: any) {
+    if (id !== req.user.sub) throw new ForbiddenException('You can only update your own account');
     return this.tenantsService.updateAccount(id, payload);
   }
 

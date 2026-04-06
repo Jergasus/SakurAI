@@ -89,7 +89,9 @@ export class WidgetElementComponent implements OnInit, OnChanges, AfterViewCheck
 
   private loadHistory(baseUrl: string) {
     this.isLoading = true;
-    this.http.get<any[]>(`${baseUrl}/chat/history/${this.sessionId}`).subscribe({
+    this.http.get<any[]>(`${baseUrl}/chat/history/${this.sessionId}`, {
+      headers: { 'x-api-key': this.apiKey },
+    }).subscribe({
       next: (history) => {
         this.rawHistory = history || [];
         if (this.rawHistory.length > 0) {
@@ -130,7 +132,9 @@ export class WidgetElementComponent implements OnInit, OnChanges, AfterViewCheck
   resetChat() {
     const baseUrl = this.resolveApiUrl();
     if (this.sessionId) {
-      this.http.delete(`${baseUrl}/chat/history/${this.sessionId}`).subscribe();
+      this.http.delete(`${baseUrl}/chat/history/${this.sessionId}`, {
+        headers: { 'x-api-key': this.apiKey },
+      }).subscribe();
     }
 
     const storageKey = `widget_session_${this.apiKey}`;

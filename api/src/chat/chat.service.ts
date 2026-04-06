@@ -21,30 +21,33 @@ export class ChatService {
     this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
   }
 
-  async getSessionHistory(sessionId: string, apiKey?: string) {
+  async getSessionHistory(sessionId: string, apiKey: string) {
+    if (!apiKey) throw new UnauthorizedException('API key is required');
+
+    const tenant = await this.tenantsService.findByApiKey(apiKey);
+    if (!tenant) throw new UnauthorizedException('Invalid API Key');
+
     const session = await this.chatSessionModel.findOne({ sessionId });
     if (!session) return [];
 
-    // If apiKey provided, verify ownership
-    if (apiKey) {
-      const tenant = await this.tenantsService.findByApiKey(apiKey);
-      if (!tenant || session.tenantId.toString() !== tenant.id.toString()) {
-        throw new ForbiddenException('Session does not belong to this tenant');
-      }
+    if (session.tenantId.toString() !== tenant.id.toString()) {
+      throw new ForbiddenException('Session does not belong to this tenant');
     }
 
     return session.history;
   }
 
-  async deleteSessionHistory(sessionId: string, apiKey?: string) {
+  async deleteSessionHistory(sessionId: string, apiKey: string) {
+    if (!apiKey) throw new UnauthorizedException('API key is required');
+
+    const tenant = await this.tenantsService.findByApiKey(apiKey);
+    if (!tenant) throw new UnauthorizedException('Invalid API Key');
+
     const session = await this.chatSessionModel.findOne({ sessionId });
     if (!session) return { message: 'History deleted successfully' };
 
-    if (apiKey) {
-      const tenant = await this.tenantsService.findByApiKey(apiKey);
-      if (!tenant || session.tenantId.toString() !== tenant.id.toString()) {
-        throw new ForbiddenException('Session does not belong to this tenant');
-      }
+    if (session.tenantId.toString() !== tenant.id.toString()) {
+      throw new ForbiddenException('Session does not belong to this tenant');
     }
 
     await this.chatSessionModel.deleteOne({ sessionId });

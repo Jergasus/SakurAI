@@ -36,9 +36,8 @@ export class TenantsService {
     return await this.tenantModel.findByIdAndUpdate(id, updateData, { returnDocument: 'after' }).exec();
   }
 
-  // Función para LISTAR todos los agentes (útil para tu panel de control)
-  async findAll() {
-    return await this.tenantModel.find().exec();
+  async findById(id: string) {
+    return await this.tenantModel.findById(id).select('-password').exec();
   }
 
   // Public lookup by API Key — excludes sensitive fields

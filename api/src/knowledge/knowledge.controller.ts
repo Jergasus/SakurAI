@@ -16,14 +16,14 @@ export class KnowledgeController {
 
   // POST localhost:3000/knowledge
   @Post()
-  async create(@Body() dto: IngestTextDto) {
-    return this.knowledgeService.ingestText(dto.tenantId, dto.content);
+  async create(@Body() dto: IngestTextDto, @Req() req: any) {
+    return this.knowledgeService.ingestText(req.user.sub, dto.content);
   }
 
-  // GET localhost:3000/knowledge?tenantId=...
+  // GET localhost:3000/knowledge — returns only the logged-in user's knowledge
   @Get()
-  async findAll(@Query('tenantId') tenantId: string) {
-    return this.knowledgeService.findAll(tenantId);
+  async findAll(@Req() req: any) {
+    return this.knowledgeService.findAll(req.user.sub);
   }
 
   // DELETE localhost:3000/knowledge/:id
@@ -57,8 +57,9 @@ export class KnowledgeController {
   @UseInterceptors(FileInterceptor('file')) // NestJS atrapa el archivo que viene en el formulario
   async uploadDocument(
     @UploadedFile() file: Express.Multer.File,
-    @Body('tenantId') tenantId: string,
+    @Req() req: any,
   ) {
+    const tenantId = req.user.sub;
     if (!file) {
       throw new BadRequestException('No file was uploaded.');
     }

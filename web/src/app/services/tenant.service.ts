@@ -11,9 +11,8 @@ export class TenantService {
 
   constructor(private http: HttpClient) {}
 
-  // 1. Obtener lista de todos los agentes
-  getTenants(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+  getTenant(): Observable<any> {
+    return this.http.get<any>(this.apiUrl);
   }
 
   // 2. Crear un nuevo agente

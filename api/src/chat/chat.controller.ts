@@ -1,5 +1,5 @@
-import { Controller, Post, Body, Headers, Get, Param, UseGuards, Delete } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Controller, Post, Body, Headers, Get, Param, UseGuards, Delete, Req, ForbiddenException } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { ChatService } from './chat.service';
 import { AuthGuard } from '../auth/auth.guard';
@@ -28,8 +28,10 @@ export class ChatController {
   }
 
   @UseGuards(AuthGuard)
+  @ApiBearerAuth()
   @Get('analytics/:tenantId')
-  async getAnalytics(@Param('tenantId') tenantId: string) {
+  async getAnalytics(@Param('tenantId') tenantId: string, @Req() req: any) {
+    if (tenantId !== req.user.sub) throw new ForbiddenException('You can only view your own analytics');
     return this.chatService.getAnalytics(tenantId);
   }
 

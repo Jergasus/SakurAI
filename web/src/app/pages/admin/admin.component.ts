@@ -50,7 +50,7 @@ export class AdminComponent implements OnInit, OnDestroy {
 
     this.pollingInterval = setInterval(() => {
       if (this.selectedTenant) {
-        this.knowledgeService.getAll(this.selectedTenant._id).subscribe((data: any[]) => {
+        this.knowledgeService.getAll().subscribe((data: any[]) => {
           if (this.agentMemories.length !== data.length) {
             this.agentMemories = data;
             this.cdr.detectChanges();
@@ -78,22 +78,18 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   loadTenants() {
-    const myTenantId = localStorage.getItem('tenantId');
-
-    this.tenantService.getTenants().subscribe(data => {
-      this.tenants = data.filter((t: any) => t._id === myTenantId);
-
-      if (this.tenants.length > 0) {
-        this.selectTenant(this.tenants[0]);
+    this.tenantService.getTenant().subscribe(data => {
+      if (data) {
+        this.tenants = [data];
+        this.selectTenant(data);
       }
-
       this.cdr.detectChanges();
     });
   }
 
   loadMemories() {
     if (!this.selectedTenant) return;
-    this.knowledgeService.getAll(this.selectedTenant._id).subscribe((data) => {
+    this.knowledgeService.getAll().subscribe((data) => {
       this.agentMemories = data;
       this.cdr.detectChanges();
     });
@@ -214,7 +210,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     if (!this.newKnowledgeContent.trim()) return;
     this.isLoadingKnowledge = true;
     this.knowledgeService
-      .addKnowledge(this.selectedTenant._id, this.newKnowledgeContent)
+      .addKnowledge(this.newKnowledgeContent)
       .subscribe({
         next: () => {
           this.newKnowledgeContent = '';
@@ -278,7 +274,7 @@ export class AdminComponent implements OnInit, OnDestroy {
       this.cdr.detectChanges();
 
       try {
-        await this.knowledgeService.uploadFile(this.selectedTenant._id, file).toPromise();
+        await this.knowledgeService.uploadFile(file).toPromise();
         success++;
       } catch (err) {
         console.error(`Error uploading ${file.name}:`, err);
