@@ -63,8 +63,9 @@ In the admin dashboard, click **Install Widget**. You'll see the full snippet wi
 It looks like this:
 
 ```html
-<script src="http://YOUR_SERVER/widget/widget.js"></script>
-<ai-chat-widget api-key="sk_..." api-url="http://YOUR_SERVER:3000"></ai-chat-widget>
+<script src="http://YOUR_SERVER/widget/widget.js"
+        data-api-key="sk_..."
+        data-api-url="http://YOUR_SERVER:3000"></script>
 ```
 
 ### Step 3: Paste into your website
