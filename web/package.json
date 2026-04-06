@@ -1,6 +1,10 @@
 {
-  "name": "web",
-  "version": "0.0.0",
+  "name": "sakurai-web",
+  "version": "1.0.0",
+  "description": "SakurAI frontend dashboard and embeddable widget",
+  "author": "Jergasus",
+  "private": true,
+  "license": "MIT",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

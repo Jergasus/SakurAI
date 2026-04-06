@@ -161,7 +161,6 @@ export class AdminComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.isSaving = false;
-        console.error(err);
         alert('Error saving changes.');
       }
     });
@@ -222,8 +221,7 @@ export class AdminComponent implements OnInit, OnDestroy {
           this.loadMemories();
           alert('Knowledge added successfully!');
         },
-        error: (err) => {
-          console.error(err);
+        error: () => {
           alert('Error saving knowledge.');
           this.isLoadingKnowledge = false;
         },
@@ -280,8 +278,7 @@ export class AdminComponent implements OnInit, OnDestroy {
       try {
         await this.knowledgeService.uploadFile(file).toPromise();
         success++;
-      } catch (err) {
-        console.error(`Error uploading ${file.name}:`, err);
+      } catch {
         failed++;
       }
     }
