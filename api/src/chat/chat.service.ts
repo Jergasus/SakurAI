@@ -89,7 +89,9 @@ export class ChatService {
     });
 
     const safeHistory = Array.isArray(session.history) ? session.history : [];
-    const geminiHistory = safeHistory.map(msg => {
+    // Send only the last 40 messages to Gemini to keep requests fast and within limits
+    const trimmedHistory = safeHistory.slice(-40);
+    const geminiHistory = trimmedHistory.map(msg => {
       if (msg.parts) {
         return { role: msg.role, parts: msg.parts };
       }

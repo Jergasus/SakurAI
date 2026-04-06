@@ -19,3 +19,6 @@ export class ChatSession {
 }
 
 export const ChatSessionSchema = SchemaFactory.createForClass(ChatSession);
+
+// Auto-delete sessions inactive for 30 days
+ChatSessionSchema.index({ updatedAt: 1 }, { expireAfterSeconds: 30 * 24 * 60 * 60 });
