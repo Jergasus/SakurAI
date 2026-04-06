@@ -12,7 +12,7 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  isLoginMode = true; // Para alternar entre Login y Registro
+  isLoginMode = true;
   isLoading = false;
 
   formData = {
@@ -32,22 +32,20 @@ export class LoginComponent {
     this.isLoading = true;
 
     if (this.isLoginMode) {
-      // MODO LOGIN
       this.authService.login(this.formData).subscribe({
         next: () => {
-          this.router.navigate(['/admin']); // Si acierta, lo mandamos al panel
+          this.router.navigate(['/admin']);
         },
-        error: (err) => {
+        error: () => {
           alert('Error: Invalid credentials');
           this.isLoading = false;
         }
       });
     } else {
-      // MODO REGISTRO
       this.authService.register(this.formData).subscribe({
         next: () => {
           alert('Account created! You can now sign in.');
-          this.isLoginMode = true; // Lo pasamos a la pantalla de login
+          this.isLoginMode = true;
           this.isLoading = false;
         },
         error: (err) => {
