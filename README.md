@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/badge/Embeddable-Widget-blue?style=for-the-badge" alt="Embeddable Widget" />
 </p>
 
-<h1 align="center">SakurAI</h1>
+<h1 align="center">🌸 SakurAI 🌸</h1>
 
 <p align="center">
   A self-hosted AI chat agent that blooms on your website.<br/>
