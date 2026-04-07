@@ -20,12 +20,14 @@ export class ChatService {
     }, { headers });
   }
 
-  getHistory(sessionId: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/history/${sessionId}`);
+  getHistory(apiKey: string, sessionId: string): Observable<any[]> {
+    const headers = new HttpHeaders({ 'x-api-key': apiKey });
+    return this.http.get<any[]>(`${this.apiUrl}/history/${sessionId}`, { headers });
   }
 
-  deleteHistory(sessionId: string): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/history/${sessionId}`);
+  deleteHistory(apiKey: string, sessionId: string): Observable<any> {
+    const headers = new HttpHeaders({ 'x-api-key': apiKey });
+    return this.http.delete<any>(`${this.apiUrl}/history/${sessionId}`, { headers });
   }
 
   getAnalytics(tenantId: string): Observable<any> {

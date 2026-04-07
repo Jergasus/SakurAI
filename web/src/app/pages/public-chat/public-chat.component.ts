@@ -49,7 +49,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
     this.http.get<any>(`${environment.apiUrl}/tenants/public/${this.apiKey}`).subscribe(data => {
       this.agentData = data;
       this.isLoading = true;
-      this.chatService.getHistory(this.sessionId).subscribe({
+      this.chatService.getHistory(this.apiKey, this.sessionId).subscribe({
         next: (history) => {
           this.rawHistory = history || [];
           
@@ -90,7 +90,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
 
   resetChat() {
     if (this.sessionId) {
-      this.chatService.deleteHistory(this.sessionId).subscribe();
+      this.chatService.deleteHistory(this.apiKey, this.sessionId).subscribe();
     }
 
     const storageKey = `public_chat_session_${this.apiKey}`;

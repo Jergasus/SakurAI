@@ -67,7 +67,7 @@ export class ChatWidgetComponent implements AfterViewChecked, OnInit, OnChanges 
     this.sessionId = savedSessionId;
 
     this.isLoading = true;
-    this.chatService.getHistory(this.sessionId).subscribe({
+    this.chatService.getHistory(this.selectedApiKey, this.sessionId).subscribe({
       next: (history) => {
         this.rawHistory = history || [];
 
@@ -107,7 +107,7 @@ export class ChatWidgetComponent implements AfterViewChecked, OnInit, OnChanges 
 
   resetChat() {
     if (this.sessionId) {
-      this.chatService.deleteHistory(this.sessionId).subscribe();
+      this.chatService.deleteHistory(this.selectedApiKey, this.sessionId).subscribe();
     }
 
     if (this.currentAgentData) {
