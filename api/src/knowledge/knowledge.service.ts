@@ -119,6 +119,11 @@ export class KnowledgeService {
     return this.knowledgeModel.find({ tenantId }).select('-embedding').exec();
   }
 
+  async removeAll(tenantId: string) {
+    const result = await this.knowledgeModel.deleteMany({ tenantId }).exec();
+    return { deleted: result.deletedCount };
+  }
+
   async remove(id: string, tenantId: string) {
     const doc = await this.knowledgeModel.findById(id).exec();
     if (!doc || doc.tenantId.toString() !== tenantId.toString()) {

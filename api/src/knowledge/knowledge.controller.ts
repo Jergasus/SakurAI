@@ -26,6 +26,11 @@ export class KnowledgeController {
     return this.knowledgeService.findAll(req.user.sub);
   }
 
+  @Delete()
+  async removeAll(@Req() req: any) {
+    return this.knowledgeService.removeAll(req.user.sub);
+  }
+
   @Delete(':id')
   async remove(@Param('id') id: string, @Req() req: any) {
     return this.knowledgeService.remove(id, req.user.sub);

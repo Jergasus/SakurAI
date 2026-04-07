@@ -52,7 +52,7 @@ export class AdminComponent implements OnInit, OnDestroy {
         this.toast = null;
         this.cdr.detectChanges();
       }, 300);
-    }, 2500);
+    }, 2000);
   }
 
   // Account management
@@ -122,10 +122,32 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   deleteMemory(id: string) {
     if (confirm('Are you sure you want to delete this knowledge entry?')) {
-      this.knowledgeService.delete(id).subscribe(() => {
-        this.loadMemories();
+      this.knowledgeService.delete(id).subscribe({
+        next: () => {
+          this.loadMemories();
+          this.showToast('Knowledge entry deleted.');
+        },
+        error: () => {
+          this.showToast('Error deleting knowledge entry.', 'error');
+        }
       });
     }
+  }
+
+  deleteAllKnowledge() {
+    if (!confirm('Are you sure you want to delete ALL knowledge entries? This cannot be undone.')) return;
+    this.isLoadingKnowledge = true;
+    this.knowledgeService.deleteAll().subscribe({
+      next: () => {
+        this.loadMemories();
+        this.isLoadingKnowledge = false;
+        this.showToast('All knowledge entries deleted.');
+      },
+      error: () => {
+        this.isLoadingKnowledge = false;
+        this.showToast('Error deleting knowledge entries.', 'error');
+      }
+    });
   }
 
   selectTenant(tenant: any) {

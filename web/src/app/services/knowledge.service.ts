@@ -23,6 +23,10 @@ export class KnowledgeService {
     return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
 
+  deleteAll(): Observable<any> {
+    return this.http.delete<any>(this.apiUrl);
+  }
+
   uploadFile(file: File): Observable<any> {
     const formData = new FormData();
     formData.append('file', file);

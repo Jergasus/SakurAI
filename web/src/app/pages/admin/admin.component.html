@@ -456,7 +456,15 @@
             <!-- Document count header -->
             <div class="flex items-center justify-between mb-4">
               <h4 class="text-sm font-semibold text-slate-600 dark:text-slate-300">Knowledge Entries</h4>
-              <span class="text-xs text-slate-400 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full font-medium">{{ agentMemories.length }} document{{ agentMemories.length !== 1 ? 's' : '' }}</span>
+              <div class="flex items-center gap-2">
+                @if (agentMemories.length > 1) {
+                  <button (click)="deleteAllKnowledge()" [disabled]="isLoadingKnowledge"
+                    class="text-xs bg-red-500 hover:bg-red-600 text-white font-medium px-3 py-1 rounded-full disabled:opacity-50 transition-colors">
+                    Delete All
+                  </button>
+                }
+                <span class="text-xs text-slate-400 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full font-medium">{{ agentMemories.length }} document{{ agentMemories.length !== 1 ? 's' : '' }}</span>
+              </div>
             </div>
 
             <div class="space-y-3">
