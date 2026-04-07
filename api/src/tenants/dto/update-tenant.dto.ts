@@ -21,4 +21,8 @@ export class UpdateTenantDto {
   @IsOptional()
   @IsString()
   chatTitle?: string;
+
+  @IsOptional()
+  @IsString()
+  chatIcon?: string;
 }

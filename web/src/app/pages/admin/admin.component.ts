@@ -27,6 +27,13 @@ export class AdminComponent implements OnInit, OnDestroy {
   uploadProgress = '';
 
   activeModal: 'general' | 'appearance' | 'install' | 'tools' | 'knowledge' | 'analytics' | 'account' | null = null;
+  showEmojiPicker = false;
+  emojiOptions = [
+    '🌸', '🤖', '💬', '🧠', '⚡', '🔥', '💡', '🎯',
+    '🏥', '🍕', '🔧', '📚', '🎓', '🛒', '✈️', '🏠',
+    '💼', '🎨', '🎵', '🌟', '❤️', '🐱', '🐶', '🦊',
+    '👋', '😊', '🙌', '💎', '🚀', '🌈', '☕', '🍀',
+  ];
 
   frontendUrl = window.location.origin;
 
@@ -148,9 +155,9 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   saveTenantChanges() {
     this.isSaving = true;
-    const { _id, name, systemPrompt, allowedTools, primaryColor, chatTitle } = this.selectedTenant;
+    const { _id, name, systemPrompt, allowedTools, primaryColor, chatTitle, chatIcon } = this.selectedTenant;
 
-    this.tenantService.updateTenant(_id, { name, systemPrompt, allowedTools, primaryColor, chatTitle }).subscribe({
+    this.tenantService.updateTenant(_id, { name, systemPrompt, allowedTools, primaryColor, chatTitle, chatIcon }).subscribe({
       next: () => {
         this.isSaving = false;
         alert('Agent profile updated successfully!');

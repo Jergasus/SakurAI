@@ -26,6 +26,9 @@ export class Tenant {
   @Prop({ default: '#2563EB' })
   primaryColor: string;
 
+  @Prop({ default: '🌸' })
+  chatIcon: string;
+
   @Prop({ default: 'Virtual Assistant' })
   chatTitle: string;
 

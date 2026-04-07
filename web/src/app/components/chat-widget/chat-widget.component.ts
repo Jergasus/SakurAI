@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, AfterViewChecked, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewChecked, OnInit, OnChanges, SimpleChanges, Input, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
@@ -13,8 +13,9 @@ import katex from 'katex';
   templateUrl: './chat-widget.component.html',
   styleUrl: './chat-widget.component.css'
 })
-export class ChatWidgetComponent implements AfterViewChecked, OnInit {
+export class ChatWidgetComponent implements AfterViewChecked, OnInit, OnChanges {
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
+  @Input() agentData: any = null;
 
   isOpen = false;
   messages: { text: string; html: string; isUser: boolean }[] = [];
@@ -33,12 +34,22 @@ export class ChatWidgetComponent implements AfterViewChecked, OnInit {
   ) {}
 
   ngOnInit() {
-    this.tenantService.getTenant().subscribe((data: any) => {
-      if (data) {
-        this.selectAgent(data);
-        this.cdr.detectChanges();
-      }
-    });
+    if (!this.agentData) {
+      this.tenantService.getTenant().subscribe((data: any) => {
+        if (data) {
+          this.selectAgent(data);
+          this.cdr.detectChanges();
+        }
+      });
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['agentData'] && this.agentData) {
+      this.currentAgentData = { ...this.agentData };
+      this.selectedApiKey = this.agentData.apiKey;
+      this.cdr.detectChanges();
+    }
   }
 
   selectAgent(tenant: any) {
