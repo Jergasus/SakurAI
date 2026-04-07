@@ -26,6 +26,33 @@
 
 Drop a single `<script>` tag into any site and you get a polished AI assistant that actually knows your stuff. No third-party SaaS, no per-seat pricing — just your server, your data, your agent.
 
+## Demo
+
+### Admin Dashboard
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/82f87512-035b-41e4-89eb-f1686504dbae" alt="Admin Dashboard" width="800" />
+</p>
+
+### RAG in Action
+
+Upload your documents and SakurAI uses them to answer questions:
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/9ee95fbe-6f8e-423e-a4e0-3a29e00c58ea" alt="RAG Demo 1" width="400" />
+  <img src="https://github.com/user-attachments/assets/d19382e8-0056-4ce9-8a69-1d7c9b49a0af" alt="RAG Demo 2" width="400" />
+</p>
+
+### Conversation Memory
+
+The agent remembers your conversation history and uses RAG context:
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/fe1744af-0c3c-4dca-903c-a763741f289e" alt="Chat History 1" width="350" />
+  <img src="https://github.com/user-attachments/assets/c962333e-eceb-4128-8a43-44e7503de4eb" alt="Chat History 2" width="350" />
+  <img src="https://github.com/user-attachments/assets/6201381d-fa1c-42ef-968c-2cf7a50156ab" alt="Chat History 3" width="350" />
+</p>
+
 ## Features
 
 - **Knowledge Base (RAG)** — Upload PDFs, Word docs, text, JSON, CSV, or Markdown files. SakurAI uses vector embeddings to find relevant context before answering.
