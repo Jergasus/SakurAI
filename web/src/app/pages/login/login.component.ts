@@ -13,6 +13,7 @@ import { AuthService } from '../../services/auth.service';
 })
 export class LoginComponent {
   isLoading = false;
+  errorMessage = '';
 
   formData = {
     email: '',
@@ -23,13 +24,16 @@ export class LoginComponent {
 
   onSubmit() {
     this.isLoading = true;
+    this.errorMessage = '';
 
     this.authService.login(this.formData).subscribe({
       next: () => {
         this.router.navigate(['/admin']);
       },
-      error: () => {
-        alert('Error: Invalid credentials');
+      error: (err) => {
+        this.errorMessage = err.status === 0
+          ? 'Unable to connect to the server.'
+          : 'Invalid email or password.';
         this.isLoading = false;
       }
     });

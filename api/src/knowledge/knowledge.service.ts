@@ -76,22 +76,19 @@ export class KnowledgeService {
 
   private async searchLocal(tenantId: string, queryEmbedding: number[]): Promise<string> {
     try {
-      const totalDocs = await this.knowledgeModel.countDocuments({ tenantId });
-
-      if (totalDocs > 1000) {
-        this.logger.warn(
-          `Tenant ${tenantId} has ${totalDocs} knowledge docs. ` +
-          `Consider switching to VECTOR_SEARCH_MODE=atlas for better performance.`,
-        );
-      }
-
       const docs = await this.knowledgeModel
         .find({ tenantId })
         .select('content embedding')
-        .limit(1000)
         .exec();
 
       if (docs.length === 0) return '';
+
+      if (docs.length > 5000) {
+        this.logger.warn(
+          `Tenant ${tenantId} has ${docs.length} knowledge docs. ` +
+          `Consider switching to VECTOR_SEARCH_MODE=atlas for better performance.`,
+        );
+      }
 
       const scored = docs
         .map((doc) => ({

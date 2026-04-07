@@ -7,6 +7,14 @@ import helmet from 'helmet';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Validate after ConfigModule loads .env
+  const required = ['GEMINI_API_KEY', 'MONGO_URI', 'JWT_SECRET'];
+  const missing = required.filter(key => !process.env[key]);
+  if (missing.length > 0) {
+    console.error(`Missing required environment variables: ${missing.join(', ')}`);
+    process.exit(1);
+  }
+
   app.use(helmet());
 
   app.useGlobalPipes(new ValidationPipe({
