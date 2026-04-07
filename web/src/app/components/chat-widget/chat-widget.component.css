@@ -153,3 +153,27 @@
   margin: 0;
 }
 :host ::ng-deep .katex { font-size: 1em; }
+
+/* ─── Input Focus (uses primaryColor via --accent) ─── */
+:host ::ng-deep .input-wrapper:focus-within {
+  border-color: var(--accent, #2563EB) !important;
+  box-shadow: none !important;
+}
+
+/* ─── Dark Mode ─── */
+:host ::ng-deep .dark .chat-container { background: #1e293b; border-color: #334155; }
+:host ::ng-deep .dark .messages-area { background: #0f172a !important; }
+:host ::ng-deep .dark .bot-avatar { background: #334155 !important; border-color: #475569 !important; }
+:host ::ng-deep .dark .bot-bubble { background: #1e293b !important; border-color: #334155 !important; color: #e2e8f0 !important; }
+:host ::ng-deep .dark .input-area { background: #1e293b !important; border-top-color: #334155 !important; }
+:host ::ng-deep .dark .input-wrapper { background: #334155 !important; border-color: #475569 !important; }
+:host ::ng-deep .dark .input-wrapper:focus-within { border-color: var(--accent, #2563EB) !important; box-shadow: none !important; }
+:host ::ng-deep .dark .chat-input { color: #e2e8f0 !important; }
+:host ::ng-deep .dark .powered-by { color: #64748b !important; }
+:host ::ng-deep .dark .markdown-body code { background: #334155; border-color: #475569; color: #f472b6; }
+:host ::ng-deep .dark .markdown-body a { color: #60a5fa; }
+:host ::ng-deep .dark .markdown-body blockquote { border-left-color: #475569; color: #94a3b8; }
+:host ::ng-deep .dark .markdown-body hr { border-top-color: #334155; }
+:host ::ng-deep .dark .markdown-body th, :host ::ng-deep .dark .markdown-body td { border-color: #334155; }
+:host ::ng-deep .dark .markdown-body th { background: #1e293b; }
+:host ::ng-deep .dark .markdown-body tr:nth-child(even) { background: #1e293b; }

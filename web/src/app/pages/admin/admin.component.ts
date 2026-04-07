@@ -27,6 +27,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   uploadProgress = '';
 
   activeModal: 'general' | 'appearance' | 'install' | 'tools' | 'knowledge' | 'analytics' | 'account' | null = null;
+  isDarkMode = localStorage.getItem('darkMode') === 'true';
   showEmojiPicker = false;
   emojiOptions = ['🌸', '🤖', '💬', '🧠', '💡', '🏥', '🍕', '🔧', '📚', '🛒', '🚀', '❤️'];
 
@@ -146,6 +147,11 @@ export class AdminComponent implements OnInit, OnDestroy {
   closeModal() {
     this.activeModal = null;
     this.cdr.detectChanges();
+  }
+
+  toggleDarkMode() {
+    this.isDarkMode = !this.isDarkMode;
+    localStorage.setItem('darkMode', String(this.isDarkMode));
   }
 
   saveTenantChanges() {

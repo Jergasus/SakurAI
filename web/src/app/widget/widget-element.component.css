@@ -228,8 +228,8 @@
 }
 
 .input-wrapper:focus-within {
-  border-color: #93c5fd;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: var(--accent, #2563EB);
+  box-shadow: none;
 }
 
 .chat-input {
@@ -344,3 +344,24 @@
 /* ─── KaTeX ─── */
 .katex-block { margin: 0.5em 0; overflow-x: auto; padding: 0.25em 0; }
 .katex-block .katex-display { margin: 0; }
+
+/* ─── Dark Mode ─── */
+.dark .chat-panel { background: #1e293b; border-color: #334155; }
+.dark .messages-area { background: #0f172a; }
+.dark .messages-area::-webkit-scrollbar-thumb { background: #475569; }
+.dark .bot-avatar { background: #334155; border-color: #475569; }
+.dark .bot-bubble { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+.dark .input-area { background: #1e293b; border-top-color: #334155; }
+.dark .input-wrapper { background: #334155; border-color: #475569; }
+.dark .input-wrapper:focus-within { border-color: var(--accent, #2563EB); box-shadow: none; }
+.dark .chat-input { color: #e2e8f0; }
+.dark .chat-input::placeholder { color: #64748b; }
+.dark .powered-by { color: #64748b; }
+.dark .markdown-body code { background: #334155; border-color: #475569; color: #f472b6; }
+.dark .markdown-body a { color: #60a5fa; }
+.dark .markdown-body a:hover { color: #93c5fd; }
+.dark .markdown-body blockquote { border-left-color: #475569; color: #94a3b8; }
+.dark .markdown-body hr { border-top-color: #334155; }
+.dark .markdown-body th, .dark .markdown-body td { border-color: #334155; }
+.dark .markdown-body th { background: #1e293b; }
+.dark .markdown-body tr:nth-child(even) { background: #1e293b; }

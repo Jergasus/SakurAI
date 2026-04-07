@@ -37,6 +37,7 @@ export class WidgetElementComponent implements OnInit, OnChanges, AfterViewCheck
   newMessage = '';
   isLoading = false;
   isOpen = false;
+  isDarkChat = localStorage.getItem('chatDarkMode') === 'true';
 
   private initialized = false;
 
@@ -192,6 +193,12 @@ export class WidgetElementComponent implements OnInit, OnChanges, AfterViewCheck
         this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
       }
     } catch {}
+  }
+
+  toggleChatTheme() {
+    this.isDarkChat = !this.isDarkChat;
+    localStorage.setItem('chatDarkMode', String(this.isDarkChat));
+    this.cdr.detectChanges();
   }
 
   private resolveApiUrl(): string {

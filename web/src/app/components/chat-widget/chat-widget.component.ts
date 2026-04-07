@@ -18,6 +18,7 @@ export class ChatWidgetComponent implements AfterViewChecked, OnInit, OnChanges 
   @Input() agentData: any = null;
 
   isOpen = false;
+  isDarkChat = localStorage.getItem('chatDarkMode') === 'true';
   messages: { text: string; html: string; isUser: boolean }[] = [];
   rawHistory: any[] = [];
   newMessage = '';
@@ -145,6 +146,12 @@ export class ChatWidgetComponent implements AfterViewChecked, OnInit, OnChanges 
         this.cdr.detectChanges();
       }
     });
+  }
+
+  toggleChatTheme() {
+    this.isDarkChat = !this.isDarkChat;
+    localStorage.setItem('chatDarkMode', String(this.isDarkChat));
+    this.cdr.detectChanges();
   }
 
   ngAfterViewChecked() {

@@ -1,8 +1,8 @@
-<div class="fixed z-50 font-sans bottom-6 right-6">
+<div class="fixed z-50 font-sans bottom-6 right-6 chat-widget-root" [class.dark]="isDarkChat">
 
   @if (isOpen) {
-    <div class="bg-white shadow-2xl border border-slate-200 overflow-hidden flex flex-col animate-fade-in-up w-80 sm:w-96 rounded-2xl h-[550px] mb-4">
-      
+    <div class="chat-container bg-white shadow-2xl border border-slate-200 overflow-hidden flex flex-col animate-fade-in-up w-80 sm:w-96 rounded-2xl h-[550px] mb-4">
+
       <!-- Header -->
       <div [style.backgroundColor]="currentAgentData?.primaryColor || '#2563EB'" class="p-4 text-white flex flex-col gap-2 transition-colors duration-300 shadow-md z-10">
         <div class="flex justify-between items-center">
@@ -19,6 +19,17 @@
             </div>
           </div>
           <div class="flex items-center gap-1">
+            <button (click)="toggleChatTheme()" class="w-8 h-8 rounded-full hover:bg-white/20 flex items-center justify-center transition-colors" title="Toggle theme">
+              @if (isDarkChat) {
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              } @else {
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              }
+            </button>
             <button (click)="resetChat()" class="w-8 h-8 rounded-full hover:bg-white/20 flex items-center justify-center transition-colors" title="Reset chat">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -34,11 +45,11 @@
       </div>
 
       <!-- Messages Area -->
-      <div #scrollContainer class="flex-1 p-4 overflow-y-auto bg-slate-50 flex flex-col gap-4 custom-scrollbar">
+      <div #scrollContainer class="messages-area flex-1 p-4 overflow-y-auto bg-slate-50 flex flex-col gap-4 custom-scrollbar">
         @for (msg of messages; track $index) {
           <div class="flex w-full" [ngClass]="msg.isUser ? 'justify-end' : 'justify-start'">
             @if (!msg.isUser) {
-              <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center mr-2 shrink-0 text-sm border border-slate-300 self-start mt-1">
+              <div class="bot-avatar w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center mr-2 shrink-0 text-sm border border-slate-300 self-start mt-1">
                 {{ currentAgentData?.chatIcon || '🌸' }}
               </div>
             }
@@ -48,7 +59,7 @@
                 {{ msg.text }}
               </div>
             } @else {
-              <div class="max-w-[85%] p-3.5 text-sm leading-relaxed rounded-tl-2xl rounded-tr-2xl rounded-br-2xl bg-white border border-slate-200 text-slate-800 shadow-sm markdown-body"
+              <div class="bot-bubble max-w-[85%] p-3.5 text-sm leading-relaxed rounded-tl-2xl rounded-tr-2xl rounded-br-2xl bg-white border border-slate-200 text-slate-800 shadow-sm markdown-body"
                    [innerHTML]="msg.html">
               </div>
             }
@@ -56,10 +67,10 @@
         }
         @if (isLoading) {
           <div class="flex w-full justify-start">
-            <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center mr-2 shrink-0 text-sm border border-slate-300">
+            <div class="bot-avatar w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center mr-2 shrink-0 text-sm border border-slate-300">
               {{ currentAgentData?.chatIcon || '🌸' }}
             </div>
-            <div class="rounded-tl-2xl rounded-tr-2xl rounded-br-2xl bg-white border border-slate-200 text-slate-500 max-w-[75%] p-4 shadow-sm flex items-center gap-1.5">
+            <div class="bot-bubble rounded-tl-2xl rounded-tr-2xl rounded-br-2xl bg-white border border-slate-200 text-slate-500 max-w-[75%] p-4 shadow-sm flex items-center gap-1.5">
               <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></span>
               <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
               <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></span>
@@ -69,12 +80,12 @@
       </div>
 
       <!-- Input Area -->
-      <div class="p-4 bg-white border-t border-slate-100">
-        <div class="flex gap-2 items-center bg-slate-50 p-1.5 rounded-full border border-slate-200 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition-all"
-             [style.borderColor]="currentAgentData?.primaryColor ? currentAgentData.primaryColor + '40' : ''">
-          <input [(ngModel)]="newMessage" (keyup.enter)="sendMessage()" type="text" placeholder="Type your message..." 
-            class="flex-1 bg-transparent px-4 py-2 text-sm outline-none text-slate-700 placeholder-slate-400">
-          <button (click)="sendMessage()" [disabled]="isLoading || !newMessage" 
+      <div class="input-area p-4 bg-white border-t border-slate-100">
+        <div class="input-wrapper flex gap-2 items-center bg-slate-50 p-1.5 rounded-full border border-slate-200 transition-all"
+             [style.--accent]="currentAgentData?.primaryColor || '#2563EB'">
+          <input [(ngModel)]="newMessage" (keyup.enter)="sendMessage()" type="text" placeholder="Type your message..."
+            class="chat-input flex-1 bg-transparent px-4 py-2 text-sm outline-none text-slate-700 placeholder-slate-400">
+          <button (click)="sendMessage()" [disabled]="isLoading || !newMessage"
             class="text-white p-2 rounded-full w-10 h-10 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-105 shadow-sm"
             [style.backgroundColor]="currentAgentData?.primaryColor || '#2563EB'">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform rotate-90" viewBox="0 0 20 20" fill="currentColor">
@@ -83,7 +94,7 @@
           </button>
         </div>
         <div class="text-center mt-2">
-          <span class="text-[10px] text-slate-400 font-medium">Powered by SakurAI</span>
+          <span class="powered-by text-[10px] text-slate-400 font-medium">Powered by SakurAI</span>
         </div>
       </div>
     </div>
@@ -91,7 +102,7 @@
 
   <!-- Floating Button -->
   @if (!isOpen) {
-    <button (click)="toggleChat()" 
+    <button (click)="toggleChat()"
       class="w-16 h-16 text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-all duration-300 relative group"
       [style.backgroundColor]="currentAgentData?.primaryColor || '#2563EB'">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
