@@ -30,13 +30,15 @@ Drop a single `<script>` tag into any site and you get a polished AI assistant t
 
 ### Admin Dashboard
 
+Configure your agent's personality, appearance, knowledge base, and get your embed code — all from one place.
+
 <p align="center">
   <img src="https://github.com/user-attachments/assets/82f87512-035b-41e4-89eb-f1686504dbae" alt="Admin Dashboard" width="800" />
 </p>
 
 ### RAG in Action
 
-Upload your documents and SakurAI uses them to answer questions:
+Upload your text / documents and SakurAI will use them to answer questions with accurate, grounded responses.
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/7decf561-18ce-4419-8e08-41c8e021976b" alt="RAG Demo 1" width="400" />
@@ -45,7 +47,7 @@ Upload your documents and SakurAI uses them to answer questions:
 
 ### Conversation Memory
 
-The agent remembers your conversation history and uses RAG context:
+The agent maintains context throughout the conversation and uses RAG context. Each new session starts fresh.
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/daa9f692-5cf8-4709-be6b-a7706b95d214" alt="Chat History 1" width="350" />
@@ -101,9 +103,9 @@ That's it — a floating chat button appears in the bottom-right corner of your 
 
 ```
 Your visitor's browser               Your server (one VPS)
-┌─────────────┐                  ┌─────────────────────────┐
-│  <script>   │ ──── loads ────▶ │ Nginx (:80)             │
-│  widget.js  │                  │  ├── Admin dashboard     │
+┌─────────────┐                  ┌──────────────────────────┐
+│  <script>   │ ──── loads ────▶ │ Nginx (:80)              │
+│  widget.js  │                  │  ├── Admin dashboard     │ 
 │             │                  │  ├── widget.js           │
 │  User types │                  │  └── /api/* proxy ──┐    │
 │  a message  │ ── /api/* ────▶  │                     ▼    │
@@ -113,7 +115,7 @@ Your visitor's browser               Your server (one VPS)
 └─────────────┘                  │  └── Session persistence │
                                  │                          │
                                  │ MongoDB (internal)       │
-                                 └─────────────────────────┘
+                                 └──────────────────────────┘
 ```
 
 1. Your visitor loads `widget.js` — a floating chat button appears
