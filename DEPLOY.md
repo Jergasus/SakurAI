@@ -38,7 +38,8 @@ That's it. The stack includes MongoDB, the API, and the web dashboard — all ru
 ## Using the Admin Dashboard
 
 - **General Settings**: Set your agent's name and system prompt (personality)
-- **Widget Appearance**: Customize the chat widget colors and title
+- **Widget Appearance**: Customize the chat widget colors, title, and icon (emoji picker)
+- **Dark Mode**: Toggle between light and dark themes for the dashboard using the moon/sun button in the header
 - **Knowledge Base**: Upload PDFs or add text to give your agent domain knowledge (RAG)
 - **Skills (Tools)**: Enable custom tools your agent can use (see [TOOLS.md](TOOLS.md) for how to create them)
 - **Analytics**: View conversation stats and recent chat history

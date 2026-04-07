@@ -1,9 +1,7 @@
 import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateTenantDto } from './dto/create-tenant.dto';
 import { Tenant, TenantDocument } from '../schemas/tenant.schema';
-import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -11,17 +9,6 @@ export class TenantsService {
   constructor(
     @InjectModel(Tenant.name) private tenantModel: Model<TenantDocument>,
   ) {}
-
-  async create(createTenantDto: CreateTenantDto) {
-    const generatedApiKey = 'sk_' + crypto.randomBytes(24).toString('hex');
-
-    const newTenant = new this.tenantModel({
-      ...createTenantDto,
-      apiKey: generatedApiKey,
-    });
-
-    return await newTenant.save();
-  }
 
   async update(id: string, updateData: any) {
     return await this.tenantModel.findByIdAndUpdate(id, updateData, { returnDocument: 'after' }).exec();

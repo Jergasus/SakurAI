@@ -18,7 +18,7 @@ export class KnowledgeService {
     this.logger.log(`Vector search mode: ${this.vectorSearchMode}`);
   }
 
-  async ingestText(tenantId: string, content: string, source: string = 'manual') {
+  async ingestText(tenantId: string, content: string) {
     const model = this.genAI.getGenerativeModel({ model: 'gemini-embedding-001' });
     const result = await model.embedContent(content);
     const embedding = result.embedding.values;

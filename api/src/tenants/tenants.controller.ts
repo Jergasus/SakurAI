@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, UseGuards, Req, ForbiddenException } from '@nestjs/common';
+import { Controller, Get, Patch, Param, Body, UseGuards, Req, ForbiddenException } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { TenantsService } from './tenants.service';
-import { CreateTenantDto } from './dto/create-tenant.dto';
 import { UpdateTenantDto } from './dto/update-tenant.dto';
 import { AuthGuard } from '../auth/auth.guard';
 
@@ -9,13 +8,6 @@ import { AuthGuard } from '../auth/auth.guard';
 @Controller('tenants')
 export class TenantsController {
   constructor(private readonly tenantsService: TenantsService) {}
-
-  @UseGuards(AuthGuard)
-  @ApiBearerAuth()
-  @Post()
-  create(@Body() createTenantDto: CreateTenantDto) {
-    return this.tenantsService.create(createTenantDto);
-  }
 
   @UseGuards(AuthGuard)
   @ApiBearerAuth()

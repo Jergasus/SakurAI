@@ -8,9 +8,6 @@ export class Tenant {
   @Prop({ required: true, unique: true })
   name: string;
 
-  @Prop({ required: true, default: 'restaurant' })
-  niche: string;
-
   @Prop({ required: true, unique: true })
   email: string;
 

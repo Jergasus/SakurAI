@@ -162,16 +162,16 @@ For production setup (HTTPS, MongoDB Atlas, CORS), see the [Deployment Guide](DE
 
 ## Running Multiple Agents
 
-Each SakurAI deployment runs **one agent** with its own knowledge base, configuration, and API key. If you need separate agents for different projects (e.g., one for your restaurant, another for your clinic), run a separate instance for each:
+Each SakurAI deployment runs **one agent** with its own knowledge base, configuration, and API key. If you need separate agents for different projects, run a separate instance for each:
 
 ```bash
-# Agent 1 — Restaurant (default ports 80 / 3000)
-cp -r SakurAI restaurant-agent && cd restaurant-agent
+# Agent 1 (default port 80)
+cp -r SakurAI agent-1 && cd agent-1
 # Edit .env: set GEMINI_API_KEY and credentials
 docker-compose up -d
 
-# Agent 2 — Clinic (different port)
-cp -r SakurAI clinic-agent && cd clinic-agent
+# Agent 2 (different port)
+cp -r SakurAI agent-2 && cd agent-2
 # Edit .env: set WEB_PORT=8080 and your GEMINI_API_KEY
 docker-compose up -d
 ```

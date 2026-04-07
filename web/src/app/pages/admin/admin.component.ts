@@ -114,7 +114,7 @@ export class AdminComponent implements OnInit, OnDestroy {
       this.selectedTenant.allowedTools = [];
     }
 
-    this.tenantService.getAvailableTools(this.selectedTenant.niche).subscribe((tools) => {
+    this.tenantService.getAvailableTools().subscribe((tools) => {
       this.availableTools = tools;
       this.cdr.detectChanges();
     });

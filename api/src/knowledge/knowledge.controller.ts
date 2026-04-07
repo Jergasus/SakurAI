@@ -83,7 +83,7 @@ export class KnowledgeController {
         const batch = chunks.slice(i, i + batchSize);
 
         await Promise.all(
-          batch.map(chunk => this.knowledgeService.ingestText(tenantId, chunk, fileType))
+          batch.map(chunk => this.knowledgeService.ingestText(tenantId, chunk))
         );
         
         this.logger.log(`Processed ${Math.min(i + batchSize, chunks.length)} of ${chunks.length} chunks`);

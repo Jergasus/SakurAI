@@ -19,9 +19,8 @@ export class TenantService {
     return this.http.patch<any>(`${this.apiUrl}/${id}`, data);
   }
 
-  getAvailableTools(niche?: string): Observable<any[]> {
-    const url = niche ? `${environment.apiUrl}/tools?niche=${niche}` : `${environment.apiUrl}/tools`;
-    return this.http.get<any[]>(url);
+  getAvailableTools(): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.apiUrl}/tools`);
   }
 
   updateAccount(id: string, payload: { email?: string; currentPassword?: string; newPassword?: string }): Observable<any> {

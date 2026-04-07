@@ -22,7 +22,6 @@ import { AgentTool } from '../interfaces/tool.interface';
 export const weatherTools: AgentTool[] = [
   {
     id: 'get_weather',           // Unique ID — used to enable/disable in the dashboard
-    niches: ['generic'],         // Which niches can use this tool (or 'generic' for all)
     icon: '🌤️',                  // Shown in the admin dashboard
     displayName: 'Check Weather', // Human-readable name
     declaration: {
@@ -105,7 +104,6 @@ The AI will call `get_weather` with `{ city: "London" }`, receive the result, an
 ```typescript
 interface AgentTool {
   id: string;                    // Unique identifier
-  niches: string[];              // Filter by niche, or ['generic'] for all
   icon?: string;                 // Emoji for the dashboard
   displayName?: string;          // Human-readable name
   declaration: FunctionDeclaration; // Gemini function declaration (name, description, parameters)

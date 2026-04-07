@@ -26,19 +26,12 @@ export class ToolRegistryService {
       .filter((declaration): declaration is FunctionDeclaration => declaration !== undefined);
   }
 
-  getAllToolsMetadata(nicheFilter?: string) {
-    const allTools = Array.from(this.tools.values());
-
-    const filteredTools = nicheFilter
-      ? allTools.filter(tool => (tool.niches || []).includes(nicheFilter) || (tool.niches || []).includes('generic'))
-      : allTools;
-
-    return filteredTools.map(tool => ({
+  getAllToolsMetadata() {
+    return Array.from(this.tools.values()).map(tool => ({
       id: tool.id,
       name: tool.displayName || tool.declaration.name,
       icon: tool.icon || '🔧',
       description: tool.declaration.description,
-      niches: tool.niches || []
     }));
   }
 }

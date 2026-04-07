@@ -25,7 +25,6 @@ export class BootstrapService implements OnApplicationBootstrap {
     const email = process.env.DEFAULT_ADMIN_EMAIL || 'admin@sakurai.com';
     const password = process.env.DEFAULT_ADMIN_PASSWORD || 'admin123';
     const name = process.env.DEFAULT_ADMIN_NAME || 'My Agent';
-    const niche = process.env.DEFAULT_ADMIN_NICHE || 'restaurant';
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const apiKey = 'sk_' + crypto.randomBytes(24).toString('hex');
@@ -33,7 +32,6 @@ export class BootstrapService implements OnApplicationBootstrap {
     const tenant = new this.tenantModel({
       name,
       email,
-      niche,
       password: hashedPassword,
       apiKey,
       systemPrompt: 'You are a helpful and polite assistant.',

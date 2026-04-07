@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ToolRegistryService } from './tool-registry.service';
 
@@ -8,7 +8,7 @@ export class ToolsController {
   constructor(private readonly toolRegistryService: ToolRegistryService) {}
 
   @Get()
-  getAllTools(@Query('niche') niche?: string) {
-    return this.toolRegistryService.getAllToolsMetadata(niche);
+  getAllTools() {
+    return this.toolRegistryService.getAllToolsMetadata();
   }
 }

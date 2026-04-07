@@ -33,7 +33,6 @@ services:
       - DEFAULT_ADMIN_EMAIL=${DEFAULT_ADMIN_EMAIL:-admin@sakurai.com}
       - DEFAULT_ADMIN_PASSWORD=${DEFAULT_ADMIN_PASSWORD:-admin123}
       - DEFAULT_ADMIN_NAME=${DEFAULT_ADMIN_NAME:-My Agent}
-      - DEFAULT_ADMIN_NICHE=${DEFAULT_ADMIN_NICHE:-restaurant}
       - THROTTLE_LIMIT=${THROTTLE_LIMIT:-60}
     # API is accessed via Nginx reverse proxy — not exposed directly
     networks:
