@@ -39,8 +39,8 @@ Drop a single `<script>` tag into any site and you get a polished AI assistant t
 Upload your documents and SakurAI uses them to answer questions:
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/9ee95fbe-6f8e-423e-a4e0-3a29e00c58ea" alt="RAG Demo 1" width="400" />
-  <img src="https://github.com/user-attachments/assets/d19382e8-0056-4ce9-8a69-1d7c9b49a0af" alt="RAG Demo 2" width="400" />
+  <img src="https://github.com/user-attachments/assets/7decf561-18ce-4419-8e08-41c8e021976b" alt="RAG Demo 1" width="400" />
+  <img src="https://github.com/user-attachments/assets/cbd0e385-7a15-4bfd-a2b7-469c905c3b63" alt="RAG Demo 2" width="400" />
 </p>
 
 ### Conversation Memory
@@ -48,9 +48,9 @@ Upload your documents and SakurAI uses them to answer questions:
 The agent remembers your conversation history and uses RAG context:
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/fe1744af-0c3c-4dca-903c-a763741f289e" alt="Chat History 1" width="350" />
-  <img src="https://github.com/user-attachments/assets/c962333e-eceb-4128-8a43-44e7503de4eb" alt="Chat History 2" width="350" />
-  <img src="https://github.com/user-attachments/assets/6201381d-fa1c-42ef-968c-2cf7a50156ab" alt="Chat History 3" width="350" />
+  <img src="https://github.com/user-attachments/assets/daa9f692-5cf8-4709-be6b-a7706b95d214" alt="Chat History 1" width="350" />
+  <img src="https://github.com/user-attachments/assets/534c8986-103e-4180-9394-df0841a84b47" alt="Chat History 2" width="350" />
+  <img src="https://github.com/user-attachments/assets/370607bf-9a5b-4310-8a13-28e31ee82b1a" alt="Chat History 3" width="350" />
 </p>
 
 ## Features
