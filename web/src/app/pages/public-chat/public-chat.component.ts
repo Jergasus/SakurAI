@@ -26,7 +26,6 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
   newMessage = '';
   isLoading = false;
   isOpen = false;
-  unreadCount = 1;
 
   constructor(
     private route: ActivatedRoute,
@@ -85,9 +84,6 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
 
   toggleChat() {
     this.isOpen = !this.isOpen;
-    if (this.isOpen) {
-      this.unreadCount = 0;
-    }
     this.cdr.detectChanges();
   }
 
@@ -124,17 +120,11 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
         this.messages = [...this.messages, { text: res.reply, html: this.renderMarkdown(res.reply), isUser: false }];
         this.rawHistory = res.history || [];
         this.isLoading = false;
-        if (!this.isOpen) {
-          this.unreadCount++;
-        }
         this.cdr.detectChanges();
       },
       error: () => {
         this.messages = [...this.messages, { text: 'Connection error.', html: 'Connection error.', isUser: false }];
         this.isLoading = false;
-        if (!this.isOpen) {
-          this.unreadCount++;
-        }
         this.cdr.detectChanges();
       }
     });

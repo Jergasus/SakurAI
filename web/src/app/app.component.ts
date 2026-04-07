@@ -8,6 +8,4 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.component.html',
   styles: [],
 })
-export class AppComponent {
-  title = 'web';
-}
+export class AppComponent {}

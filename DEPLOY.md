@@ -28,12 +28,12 @@ That's it. The stack includes MongoDB, the API, and the web dashboard — all ru
 
 1. Open **http://localhost** in your browser
 2. Log in with the default credentials:
-   - Email: `admin@localhost`
+   - Email: `admin@sakurai.com`
    - Password: `admin123`
 3. You'll land on the admin dashboard where you can configure your agent
 
 > [!CAUTION]
-> Change your password immediately from the **Account** section in the dashboard header. The default credentials (`admin@localhost` / `admin123`) are publicly known.
+> Change your password immediately from the **Account** section in the dashboard header. The default credentials (`admin@sakurai.com` / `admin123`) are publicly known.
 
 ## Using the Admin Dashboard
 
@@ -65,7 +65,7 @@ It looks like this:
 ```html
 <script src="http://YOUR_SERVER/widget/widget.js"
         data-api-key="sk_..."
-        data-api-url="http://YOUR_SERVER:3000"></script>
+        data-api-url="http://YOUR_SERVER/api"></script>
 ```
 
 ### Step 3: Paste into your website
@@ -149,7 +149,7 @@ All configuration is done via environment variables in `.env`. See `.env.example
 | `CORS_ALLOW_ALL` | `true` | Allow widget from any domain |
 | `JWT_SECRET` | `change-me-in-production` | Auth token signing |
 | `THROTTLE_LIMIT` | `60` | Max requests per minute per IP |
-| `DEFAULT_ADMIN_*` | `admin@localhost` / `admin123` | First-run seed credentials |
+| `DEFAULT_ADMIN_*` | `admin@sakurai.com` / `admin123` | First-run seed credentials |
 
 ## Troubleshooting
 
@@ -161,21 +161,21 @@ All configuration is done via environment variables in `.env`. See `.env.example
 ## Architecture
 
 ```
-┌──────────┐     ┌──────────┐     ┌──────────┐
+┌──────────┐      ┌──────────┐     ┌──────────┐
 │  Browser  │────▶│  Nginx   │────▶│  Angular │
 │ (Widget)  │     │ (port 80)│     │Dashboard │
-└─────┬─────┘     └──────────┘     └──────────┘
-      │
-      │ API calls
-      ▼
-┌───────────┐     ┌────────────┐
-│  NestJS   │────▶│  MongoDB   │
-│(port 3000)│     │(port 27017)│
-└─────┬─────┘     └────────────┘
-      │
-      ▼
-┌───────────┐
-│  Gemini   │
-│   API     │
-└───────────┘
+└───────────┘     └────┬─────┘     └──────────┘
+                       │
+                       │ /api/* proxy
+                       ▼
+                 ┌───────────┐     ┌────────────┐
+                 │  NestJS   │────▶│  MongoDB   │
+                 │ (internal)│     │ (internal) │
+                 └─────┬─────┘     └────────────┘
+                       │
+                       ▼
+                 ┌───────────┐
+                 │  Gemini   │
+                 │   API     │
+                 └───────────┘
 ```

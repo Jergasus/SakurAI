@@ -1,7 +1,6 @@
 services:
   mongo:
     image: mongo:7
-    container_name: saas-agents-mongo
     restart: always
     # Not exposed to host — only accessible within the Docker network
     volumes:
@@ -18,7 +17,6 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile
-    container_name: saas-agents-api
     restart: always
     depends_on:
       mongo:
@@ -32,13 +30,12 @@ services:
       - VECTOR_SEARCH_MODE=${VECTOR_SEARCH_MODE:-local}
       - CORS_ALLOW_ALL=${CORS_ALLOW_ALL:-true}
       - FRONTEND_URL=${FRONTEND_URL:-http://localhost}
-      - DEFAULT_ADMIN_EMAIL=${DEFAULT_ADMIN_EMAIL:-admin@localhost}
+      - DEFAULT_ADMIN_EMAIL=${DEFAULT_ADMIN_EMAIL:-admin@sakurai.com}
       - DEFAULT_ADMIN_PASSWORD=${DEFAULT_ADMIN_PASSWORD:-admin123}
       - DEFAULT_ADMIN_NAME=${DEFAULT_ADMIN_NAME:-My Agent}
       - DEFAULT_ADMIN_NICHE=${DEFAULT_ADMIN_NICHE:-restaurant}
       - THROTTLE_LIMIT=${THROTTLE_LIMIT:-60}
-    ports:
-      - "3000:3000"
+    # API is accessed via Nginx reverse proxy — not exposed directly
     networks:
       - app-network
 
@@ -46,10 +43,9 @@ services:
     build:
       context: ./web
       dockerfile: Dockerfile
-    container_name: saas-agents-web
     restart: always
     ports:
-      - "80:80"
+      - "${WEB_PORT:-80}:80"
     depends_on:
       - api
     networks:

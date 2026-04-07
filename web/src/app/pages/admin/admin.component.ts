@@ -16,7 +16,6 @@ import { ChatWidgetComponent } from '../../components/chat-widget/chat-widget.co
   styleUrl: './admin.component.css',
 })
 export class AdminComponent implements OnInit, OnDestroy {
-  tenants: any[] = [];
   agentMemories: any[] = [];
   analytics: any = { totalMessages: 0, totalChats: 0, recentSessions: [] };
   selectedTenant: any = null;
@@ -84,7 +83,6 @@ export class AdminComponent implements OnInit, OnDestroy {
   loadTenants() {
     this.tenantService.getTenant().subscribe(data => {
       if (data) {
-        this.tenants = [data];
         this.selectTenant(data);
       }
       this.cdr.detectChanges();

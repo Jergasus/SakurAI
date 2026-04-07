@@ -34,7 +34,6 @@ Drop a single `<script>` tag into any site and you get a polished AI assistant t
 - **Conversation Memory** — Chat sessions persist across page reloads with automatic conversation summaries.
 - **Custom Tools** — Give your agent the ability to call APIs, query databases, or perform actions. See [TOOLS.md](TOOLS.md) for details.
 - **Zero Configuration** — `docker-compose up -d` and you're live. Default admin credentials are created on first boot.
-- **Multi-Tenant Ready** — Run multiple distinct agents with separate knowledge bases from a single deployment.
 - **Rate Limiting & Security** — Built-in throttling, Helmet.js security headers, JWT auth, and bcrypt password hashing.
 
 > [!NOTE]
@@ -51,7 +50,7 @@ cp .env.example .env
 docker-compose up -d --build
 ```
 
-Open **http://localhost** and log in with `admin@localhost` / `admin123`.
+Open **http://localhost** and log in with `admin@sakurai.com` / `admin123`.
 
 > [!WARNING]
 > Change the default credentials immediately via the **Account** tab in the dashboard. Also set a strong `JWT_SECRET` in your `.env` before exposing the app to the internet.
@@ -63,7 +62,7 @@ From the admin dashboard, go to **Install**, copy the snippet, and drop it into 
 ```html
 <script src="http://localhost/widget/widget.js"
         data-api-key="YOUR_API_KEY"
-        data-api-url="http://localhost:3000"></script>
+        data-api-url="http://localhost/api"></script>
 ```
 
 That's it — a floating chat button appears in the bottom-right corner of your site.
@@ -78,15 +77,15 @@ Your visitor's browser               Your server (one VPS)
 ┌─────────────┐                  ┌─────────────────────────┐
 │  <script>   │ ──── loads ────▶ │ Nginx (:80)             │
 │  widget.js  │                  │  ├── Admin dashboard     │
-│             │                  │  └── widget.js           │
-│  User types │                  │                          │
-│  a message  │ ── API call ──▶  │ NestJS API (:3000)       │
-│             │                  │  ├── RAG vector search   │
-│             │ ◀── response ──  │  ├── Gemini AI call      │
-│  AI replies │                  │  └── Session persistence │
-└─────────────┘                  │                          │
-                                 │ MongoDB (:27017)         │
-                                 │  └── Internal only       │
+│             │                  │  ├── widget.js           │
+│  User types │                  │  └── /api/* proxy ──┐    │
+│  a message  │ ── /api/* ────▶  │                     ▼    │
+│             │                  │ NestJS API (internal)    │
+│             │ ◀── response ──  │  ├── RAG vector search   │
+│  AI replies │                  │  ├── Gemini AI call      │
+└─────────────┘                  │  └── Session persistence │
+                                 │                          │
+                                 │ MongoDB (internal)       │
                                  └─────────────────────────┘
 ```
 
@@ -153,12 +152,34 @@ All configuration is done via environment variables in `.env`. See [`.env.exampl
 | `VECTOR_SEARCH_MODE` | `local` | `local` (in-memory cosine) or `atlas` (MongoDB Atlas) |
 | `CORS_ALLOW_ALL` | `true` | Allow widget embedding from any domain |
 | `THROTTLE_LIMIT` | `60` | Max requests per minute per IP |
-| `DEFAULT_ADMIN_*` | `admin@localhost` / `admin123` | First-run seed credentials |
+| `WEB_PORT` | `80` | Host port (dashboard + API via Nginx proxy) |
+| `DEFAULT_ADMIN_*` | `admin@sakurai.com` / `admin123` | First-run seed credentials |
 
 > [!NOTE]
 > The default `VECTOR_SEARCH_MODE=local` uses in-memory cosine similarity, which works well for small-to-medium knowledge bases. For 5,000+ documents, switch to `atlas` mode with a MongoDB Atlas vector search index.
 
 For production setup (HTTPS, MongoDB Atlas, CORS), see the [Deployment Guide](DEPLOY.md).
+
+## Running Multiple Agents
+
+Each SakurAI deployment runs **one agent** with its own knowledge base, configuration, and API key. If you need separate agents for different projects (e.g., one for your restaurant, another for your clinic), run a separate instance for each:
+
+```bash
+# Agent 1 — Restaurant (default ports 80 / 3000)
+cp -r SakurAI restaurant-agent && cd restaurant-agent
+# Edit .env: set GEMINI_API_KEY and credentials
+docker-compose up -d
+
+# Agent 2 — Clinic (different port)
+cp -r SakurAI clinic-agent && cd clinic-agent
+# Edit .env: set WEB_PORT=8080 and your GEMINI_API_KEY
+docker-compose up -d
+```
+
+Each instance is fully isolated — separate database, separate knowledge base, separate admin account.
+
+> [!TIP]
+> You only need to change `WEB_PORT` in `.env` to avoid port conflicts. Docker Compose uses the folder name to isolate containers, networks, and volumes automatically. If using **MongoDB Atlas**, set a different database name in `MONGO_URI` for each instance (e.g., `mongodb+srv://.../agent_1` and `mongodb+srv://.../agent_2`).
 
 ## License
 

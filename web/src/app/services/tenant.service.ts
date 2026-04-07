@@ -15,10 +15,6 @@ export class TenantService {
     return this.http.get<any>(this.apiUrl);
   }
 
-  createTenant(data: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, data);
-  }
-
   updateTenant(id: string, data: any): Observable<any> {
     return this.http.patch<any>(`${this.apiUrl}/${id}`, data);
   }

@@ -298,24 +298,6 @@
   transform: scale(1.1);
 }
 
-.badge {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background: #ef4444;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 700;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid #fff;
-  animation: bounce 1.4s infinite ease-in-out;
-}
-
 /* ─── Markdown Body ─── */
 .markdown-body { line-height: 1.6; word-wrap: break-word; overflow-wrap: break-word; }
 .markdown-body h1, .markdown-body h2, .markdown-body h3,

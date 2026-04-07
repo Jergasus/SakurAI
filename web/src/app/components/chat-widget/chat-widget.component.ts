@@ -17,15 +17,12 @@ export class ChatWidgetComponent implements AfterViewChecked, OnInit {
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
 
   isOpen = false;
-  unreadCount = 1;
   messages: { text: string; html: string; isUser: boolean }[] = [];
   rawHistory: any[] = [];
   newMessage = '';
   isLoading = false;
 
-  tenants: any[] = [];
   selectedApiKey: string = '';
-  currentAgentName: string = 'Select an Agent';
   currentAgentData: any = null;
   sessionId: string = '';
 
@@ -36,25 +33,16 @@ export class ChatWidgetComponent implements AfterViewChecked, OnInit {
   ) {}
 
   ngOnInit() {
-    const myTenantId = localStorage.getItem('tenantId');
-
-    this.tenantService.getTenants().subscribe(data => {
-      this.tenants = data;
-
-      const myAgent = this.tenants.find(t => t._id === myTenantId);
-
-      if (myAgent) {
-        this.selectAgent(myAgent);
+    this.tenantService.getTenant().subscribe((data: any) => {
+      if (data) {
+        this.selectAgent(data);
         this.cdr.detectChanges();
-      } else if (this.tenants.length > 0) {
-        this.selectAgent(this.tenants[0]);
       }
     });
   }
 
   selectAgent(tenant: any) {
     this.selectedApiKey = tenant.apiKey;
-    this.currentAgentName = tenant.name;
     this.currentAgentData = tenant;
     
     const storageKey = `chat_session_${tenant._id}`;
@@ -101,9 +89,6 @@ export class ChatWidgetComponent implements AfterViewChecked, OnInit {
 
   toggleChat() {
     this.isOpen = !this.isOpen;
-    if (this.isOpen) {
-      this.unreadCount = 0;
-    }
     this.cdr.detectChanges();
   }
 
@@ -141,19 +126,11 @@ export class ChatWidgetComponent implements AfterViewChecked, OnInit {
         this.messages = [...this.messages, { text: res.reply, html: this.renderMarkdown(res.reply), isUser: false }];
         this.rawHistory = res.history || [];
         this.isLoading = false;
-
-        if (!this.isOpen) {
-          this.unreadCount++;
-        }
-
         this.cdr.detectChanges();
       },
       error: () => {
         this.messages = [...this.messages, { text: 'Connection error.', html: 'Connection error.', isUser: false }];
         this.isLoading = false;
-        if (!this.isOpen) {
-          this.unreadCount++;
-        }
         this.cdr.detectChanges();
       }
     });

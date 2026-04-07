@@ -1,6 +1,5 @@
-import { Controller, Post, Body, Get, Delete, Param, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Body, Get, Delete, Param, UseGuards, Req, UseInterceptors, UploadedFile, BadRequestException, Logger } from '@nestjs/common';
 import { KnowledgeService } from './knowledge.service';
-import { UseInterceptors, UploadedFile, BadRequestException, Logger } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';

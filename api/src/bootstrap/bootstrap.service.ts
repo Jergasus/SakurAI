@@ -22,7 +22,7 @@ export class BootstrapService implements OnApplicationBootstrap {
 
     this.logger.log('No tenants found. Creating default admin...');
 
-    const email = process.env.DEFAULT_ADMIN_EMAIL || 'admin@localhost';
+    const email = process.env.DEFAULT_ADMIN_EMAIL || 'admin@sakurai.com';
     const password = process.env.DEFAULT_ADMIN_PASSWORD || 'admin123';
     const name = process.env.DEFAULT_ADMIN_NAME || 'My Agent';
     const niche = process.env.DEFAULT_ADMIN_NICHE || 'restaurant';
@@ -50,7 +50,7 @@ export class BootstrapService implements OnApplicationBootstrap {
     this.logger.log(`  Password: ${'*'.repeat(password.length)}`);
     this.logger.log(`  API Key:  ${apiKey.substring(0, 6)}...`);
     this.logger.log('================================================');
-    this.logger.log('Default credentials: admin@localhost / admin123');
+    this.logger.log('Default credentials: admin@sakurai.com / admin123');
     this.logger.log('Change these credentials after first login!');
   }
 }

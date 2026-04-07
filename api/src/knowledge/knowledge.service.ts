@@ -29,7 +29,6 @@ export class KnowledgeService {
       tenantId,
       content,
       embedding,
-      metadata: { source },
     });
 
     return await newDoc.save();

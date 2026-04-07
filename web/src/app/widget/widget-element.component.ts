@@ -37,7 +37,6 @@ export class WidgetElementComponent implements OnInit, OnChanges, AfterViewCheck
   newMessage = '';
   isLoading = false;
   isOpen = false;
-  unreadCount = 1;
 
   private initialized = false;
 
@@ -125,7 +124,6 @@ export class WidgetElementComponent implements OnInit, OnChanges, AfterViewCheck
 
   toggleChat() {
     this.isOpen = !this.isOpen;
-    if (this.isOpen) this.unreadCount = 0;
     this.cdr.detectChanges();
   }
 
@@ -178,13 +176,11 @@ export class WidgetElementComponent implements OnInit, OnChanges, AfterViewCheck
           }];
           this.rawHistory = res.history || [];
           this.isLoading = false;
-          if (!this.isOpen) this.unreadCount++;
           this.cdr.detectChanges();
         },
         error: () => {
           this.messages = [...this.messages, { text: 'Connection error.', html: 'Connection error.', isUser: false }];
           this.isLoading = false;
-          if (!this.isOpen) this.unreadCount++;
           this.cdr.detectChanges();
         },
       });
@@ -200,11 +196,7 @@ export class WidgetElementComponent implements OnInit, OnChanges, AfterViewCheck
 
   private resolveApiUrl(): string {
     if (this.apiUrl) return this.apiUrl.replace(/\/$/, '');
-    // Default: same origin on port 3000
-    if (typeof window !== 'undefined') {
-      return window.location.protocol + '//' + window.location.hostname + ':3000';
-    }
-    return 'http://localhost:3000';
+    return '';
   }
 
   private renderMarkdown(text: string): string {
