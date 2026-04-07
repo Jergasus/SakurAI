@@ -28,12 +28,7 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   activeModal: 'general' | 'appearance' | 'install' | 'tools' | 'knowledge' | 'analytics' | 'account' | null = null;
   showEmojiPicker = false;
-  emojiOptions = [
-    '🌸', '🤖', '💬', '🧠', '⚡', '🔥', '💡', '🎯',
-    '🏥', '🍕', '🔧', '📚', '🎓', '🛒', '✈️', '🏠',
-    '💼', '🎨', '🎵', '🌟', '❤️', '🐱', '🐶', '🦊',
-    '👋', '😊', '🙌', '💎', '🚀', '🌈', '☕', '🍀',
-  ];
+  emojiOptions = ['🌸', '🤖', '💬', '🧠', '💡', '🏥', '🍕', '🔧', '📚', '🛒', '🚀', '❤️'];
 
   frontendUrl = window.location.origin;
 
