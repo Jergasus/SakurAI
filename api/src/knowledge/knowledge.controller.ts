@@ -5,6 +5,7 @@ import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';
 import { IngestTextDto } from './dto/ingest-text.dto';
 const pdfParse = require('pdf-parse');
+import * as mammoth from 'mammoth';
 
 @ApiTags('Knowledge')
 @ApiBearerAuth()
@@ -64,17 +65,27 @@ export class KnowledgeController {
     let extractedText = '';
 
     try {
+      const ext = file.originalname?.toLowerCase().split('.').pop();
+
       if (file.mimetype === 'application/pdf') {
         const pdfData = await pdfParse(file.buffer);
         extractedText = pdfData.text.replace(/\s+/g, ' ').trim();
-      } else if (file.mimetype === 'text/markdown' || file.originalname?.endsWith('.md')) {
+      } else if (file.mimetype === 'text/markdown' || ext === 'md') {
         extractedText = file.buffer.toString('utf-8').trim();
+      } else if (file.mimetype === 'text/plain' || ext === 'txt') {
+        extractedText = file.buffer.toString('utf-8').trim();
+      } else if (file.mimetype === 'application/json' || ext === 'json') {
+        extractedText = file.buffer.toString('utf-8').trim();
+      } else if (file.mimetype === 'text/csv' || ext === 'csv') {
+        extractedText = file.buffer.toString('utf-8').trim();
+      } else if (file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || ext === 'docx') {
+        const result = await mammoth.extractRawText({ buffer: file.buffer });
+        extractedText = result.value.trim();
       } else {
-        throw new BadRequestException('Unsupported format. Please upload a PDF or Markdown file.');
+        throw new BadRequestException('Unsupported format. Supported: PDF, Markdown, TXT, JSON, CSV, DOCX.');
       }
 
-      const fileType = file.originalname?.endsWith('.md') ? 'markdown' : 'pdf';
-      this.logger.log(`${fileType.toUpperCase()} processed: ${extractedText.length} characters extracted`);
+      this.logger.log(`${(ext || 'unknown').toUpperCase()} processed: ${extractedText.length} characters extracted`);
 
       const chunks = this.chunkText(extractedText, 1000);
       const batchSize = 5;

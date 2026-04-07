@@ -428,7 +428,7 @@
                 <div class="relative">
                   <input
                     type="file"
-                    accept=".pdf,.md"
+                    accept=".pdf,.md,.txt,.json,.csv,.docx"
                     multiple
                     (change)="uploadFile($event)"
                     [disabled]="isLoadingKnowledge"
@@ -448,7 +448,7 @@
                 @if (uploadProgress) {
                   <span class="text-xs text-blue-600 ml-auto self-center font-medium">{{ uploadProgress }}</span>
                 } @else {
-                  <span class="text-xs text-slate-400 ml-auto self-center">or drag & drop PDF / .md files here</span>
+                  <span class="text-xs text-slate-400 ml-auto self-center">or drag & drop files here (PDF, MD, TXT, JSON, CSV, DOCX)</span>
                 }
               </div>
             </div>

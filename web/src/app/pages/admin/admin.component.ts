@@ -254,8 +254,8 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   private async processUploadedFiles(files: File[]) {
-    const allowedTypes = ['application/pdf', 'text/markdown'];
-    const allowedExtensions = ['.pdf', '.md'];
+    const allowedTypes = ['application/pdf', 'text/markdown', 'text/plain', 'application/json', 'text/csv', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    const allowedExtensions = ['.pdf', '.md', '.txt', '.json', '.csv', '.docx'];
 
     const validFiles = files.filter(file => {
       const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
@@ -263,7 +263,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     });
 
     if (validFiles.length === 0) {
-      alert('Please upload PDF or Markdown (.md) files only.');
+      alert('Unsupported format. Supported: PDF, Markdown, TXT, JSON, CSV, DOCX.');
       return;
     }
 

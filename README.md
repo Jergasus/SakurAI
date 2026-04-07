@@ -28,7 +28,7 @@ Drop a single `<script>` tag into any site and you get a polished AI assistant t
 
 ## Features
 
-- **Knowledge Base (RAG)** — Upload PDFs or paste text. SakurAI uses vector embeddings to find relevant context before answering.
+- **Knowledge Base (RAG)** — Upload PDFs, Word docs, text, JSON, CSV, or Markdown files. SakurAI uses vector embeddings to find relevant context before answering.
 - **Embeddable Widget** — One `<script>` tag on any website — WordPress, Shopify, plain HTML, anything.
 - **Admin Dashboard** — Configure your agent's personality, appearance, knowledge base, and tools from a clean web UI.
 - **Conversation Memory** — Chat sessions persist across page reloads with automatic conversation summaries.
