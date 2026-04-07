@@ -678,4 +678,16 @@
     </div>
   </div>
 }
+
+<!-- Toast notification -->
+@if (toast) {
+  <div class="fixed bottom-6 right-6 z-50 animate-slide-up">
+    <div class="flex items-center gap-3 px-5 py-3 rounded-xl shadow-lg text-sm font-medium"
+      [class]="toast.type === 'success' ? 'bg-emerald-500 text-white' : toast.type === 'error' ? 'bg-red-500 text-white' : 'bg-amber-500 text-white'">
+      <span>{{ toast.type === 'success' ? '&#10003;' : toast.type === 'error' ? '&#10007;' : '&#9888;' }}</span>
+      <span>{{ toast.message }}</span>
+      <button (click)="toast = null" class="ml-2 opacity-70 hover:opacity-100">&times;</button>
+    </div>
+  </div>
+}
 </div>

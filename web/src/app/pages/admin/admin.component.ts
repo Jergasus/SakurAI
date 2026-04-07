@@ -35,6 +35,20 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   availableTools: any[] = [];
 
+  // Toast notifications
+  toast: { message: string; type: 'success' | 'error' | 'warning' } | null = null;
+  private toastTimeout: any;
+
+  showToast(message: string, type: 'success' | 'error' | 'warning' = 'success') {
+    clearTimeout(this.toastTimeout);
+    this.toast = { message, type };
+    this.cdr.detectChanges();
+    this.toastTimeout = setTimeout(() => {
+      this.toast = null;
+      this.cdr.detectChanges();
+    }, 4000);
+  }
+
   // Account management
   accountEmail = '';
   accountCurrentPassword = '';
@@ -161,24 +175,24 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.tenantService.updateTenant(_id, { name, systemPrompt, allowedTools, primaryColor, chatTitle, chatIcon }).subscribe({
       next: () => {
         this.isSaving = false;
-        alert('Agent profile updated successfully!');
+        this.showToast('Agent profile updated successfully!');
         this.loadTenants();
         this.closeModal();
       },
       error: (err) => {
         this.isSaving = false;
-        alert('Error saving changes.');
+        this.showToast('Error saving changes.', 'error');
       }
     });
   }
 
   saveAccountChanges() {
     if (this.accountNewPassword && this.accountNewPassword !== this.accountNewPasswordConfirm) {
-      alert('New passwords do not match.');
+      this.showToast('New passwords do not match.', 'error');
       return;
     }
     if (this.accountNewPassword && !this.accountCurrentPassword) {
-      alert('Please enter your current password to change it.');
+      this.showToast('Please enter your current password to change it.', 'warning');
       return;
     }
 
@@ -204,13 +218,13 @@ export class AdminComponent implements OnInit, OnDestroy {
         this.accountCurrentPassword = '';
         this.accountNewPassword = '';
         this.accountNewPasswordConfirm = '';
-        alert('Account updated successfully!');
+        this.showToast('Account updated successfully!');
         this.closeModal();
       },
       error: (err) => {
         this.isSavingAccount = false;
         const message = err.error?.message || 'Error updating account.';
-        alert(message);
+        this.showToast(message, 'error');
       }
     });
   }
@@ -225,10 +239,10 @@ export class AdminComponent implements OnInit, OnDestroy {
           this.newKnowledgeContent = '';
           this.isLoadingKnowledge = false;
           this.loadMemories();
-          alert('Knowledge added successfully!');
+          this.showToast('Knowledge added successfully!');
         },
         error: () => {
-          alert('Error saving knowledge.');
+          this.showToast('Error saving knowledge.', 'error');
           this.isLoadingKnowledge = false;
         },
       });
@@ -263,13 +277,13 @@ export class AdminComponent implements OnInit, OnDestroy {
     });
 
     if (validFiles.length === 0) {
-      alert('Unsupported format. Supported: PDF, Markdown, TXT, JSON, CSV, DOCX.');
+      this.showToast('Unsupported format. Supported: PDF, Markdown, TXT, JSON, CSV, DOCX.', 'error');
       return;
     }
 
     if (validFiles.length < files.length) {
       const skipped = files.length - validFiles.length;
-      alert(`${skipped} file(s) skipped (unsupported format). Processing ${validFiles.length} valid file(s).`);
+      this.showToast(`${skipped} file(s) skipped (unsupported format). Processing ${validFiles.length} valid file(s).`, 'warning');
     }
 
     this.isLoadingKnowledge = true;
@@ -295,9 +309,9 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
 
     if (failed === 0) {
-      alert(`All ${success} file(s) processed successfully!`);
+      this.showToast(`All ${success} file(s) processed successfully!`);
     } else {
-      alert(`Done: ${success} file(s) processed, ${failed} failed.`);
+      this.showToast(`Done: ${success} file(s) processed, ${failed} failed.`, 'warning');
     }
   }
 

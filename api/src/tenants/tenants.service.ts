@@ -23,7 +23,7 @@ export class TenantsService {
     return await this.tenantModel.findOne({ apiKey }).select('-password -email').exec();
   }
 
-  async updateAccount(id: string, payload: { email?: string; currentPassword?: string; newPassword?: string }) {
+  async updateAccount(id: string, payload: { email?: string; currentPassword?: string; newPassword?: string; }) {
     const tenant = await this.tenantModel.findById(id);
     if (!tenant) throw new BadRequestException('Tenant not found');
 
@@ -37,8 +37,8 @@ export class TenantsService {
       if (!payload.currentPassword) {
         throw new BadRequestException('Current password is required');
       }
-      if (payload.newPassword.length < 6) {
-        throw new BadRequestException('New password must be at least 6 characters');
+      if (payload.newPassword.length < 8) {
+        throw new BadRequestException('New password must be at least 8 characters');
       }
       const isMatch = await bcrypt.compare(payload.currentPassword, tenant.password);
       if (!isMatch) throw new UnauthorizedException('Current password is incorrect');
