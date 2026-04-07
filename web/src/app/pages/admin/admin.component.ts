@@ -74,7 +74,7 @@ export class AdminComponent implements OnInit, OnDestroy {
           }
         });
       }
-    }, 3000);
+    }, 30000);
   }
 
   ngOnDestroy() {

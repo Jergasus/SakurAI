@@ -52,6 +52,9 @@ async function bootstrap() {
     credentials: true,
   });
 
+  const expressApp = app.getHttpAdapter().getInstance();
+  expressApp.get('/health', (_req: any, res: any) => res.json({ status: 'ok' }));
+
   await app.listen(process.env.PORT || 3000);
 }
 bootstrap();

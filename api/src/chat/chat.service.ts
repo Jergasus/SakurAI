@@ -203,35 +203,40 @@ export class ChatService {
   }
 
   async getAnalytics(tenantId: string) {
-    const sessions = await this.chatSessionModel.find({ tenantId }).exec();
+    const [totals, recentDocs] = await Promise.all([
+      this.chatSessionModel.aggregate([
+        { $match: { tenantId } },
+        {
+          $group: {
+            _id: null,
+            totalChats: { $sum: 1 },
+            totalMessages: {
+              $sum: {
+                $size: {
+                  $filter: { input: '$history', as: 'msg', cond: { $eq: ['$$msg.role', 'user'] } },
+                },
+              },
+            },
+          },
+        },
+      ]),
+      this.chatSessionModel
+        .find({ tenantId })
+        .sort({ updatedAt: -1 })
+        .limit(50)
+        .select('sessionId summary history updatedAt')
+        .exec(),
+    ]);
 
-    let totalMessages = 0;
-    let totalChats = 0;
+    const { totalChats = 0, totalMessages = 0 } = totals[0] || {};
 
-    const recentSessions: any[] = [];
+    const recentSessions = recentDocs.map(session => ({
+      sessionId: session.sessionId,
+      updatedAt: (session as any).updatedAt || new Date(0),
+      messageCount: session.history.length,
+      preview: session.summary || session.history.find(msg => msg.role === 'user')?.parts[0]?.text || 'No messages',
+    }));
 
-    for (const session of sessions) {
-      const updatedAt = (session as any).updatedAt || new Date(0);
-
-      totalChats++;
-
-      const userMessages = session.history.filter(msg => msg.role === 'user').length;
-      totalMessages += userMessages;
-
-      recentSessions.push({
-        sessionId: session.sessionId,
-        updatedAt: updatedAt,
-        messageCount: session.history.length,
-        preview: session.summary || session.history.find(msg => msg.role === 'user')?.parts[0]?.text || 'No messages'
-      });
-    }
-
-    recentSessions.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
-
-    return {
-      totalMessages,
-      totalChats,
-      recentSessions: recentSessions.slice(0, 50)
-    };
+    return { totalMessages, totalChats, recentSessions };
   }
 }
