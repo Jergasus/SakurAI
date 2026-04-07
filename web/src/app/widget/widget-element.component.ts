@@ -14,6 +14,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 import katex from 'katex';
 
 @Component({
@@ -225,6 +226,7 @@ export class WidgetElementComponent implements OnInit, OnChanges, AfterViewCheck
       }
     });
 
-    return marked.parse(processed, { async: false, breaks: true }) as string;
+    const html = marked.parse(processed, { async: false, breaks: true }) as string;
+    return DOMPurify.sanitize(html);
   }
 }

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
 import { TenantService } from '../../services/tenant.service';
 import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 import katex from 'katex';
 
 @Component({
@@ -183,6 +184,7 @@ export class ChatWidgetComponent implements AfterViewChecked, OnInit, OnChanges 
       }
     });
 
-    return marked.parse(processed, { async: false, breaks: true }) as string;
+    const html = marked.parse(processed, { async: false, breaks: true }) as string;
+    return DOMPurify.sanitize(html);
   }
 }

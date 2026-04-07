@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { ChatService } from '../../services/chat.service';
 import { environment } from '../../../environments/environment';
 import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 import katex from 'katex';
 
 @Component({
@@ -153,6 +154,7 @@ export class PublicChatComponent implements OnInit, AfterViewChecked {
       }
     });
 
-    return marked.parse(processed, { async: false, breaks: true }) as string;
+    const html = marked.parse(processed, { async: false, breaks: true }) as string;
+    return DOMPurify.sanitize(html);
   }
 }
