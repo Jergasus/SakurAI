@@ -37,16 +37,22 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   // Toast notifications
   toast: { message: string; type: 'success' | 'error' | 'warning' } | null = null;
+  toastFading = false;
   private toastTimeout: any;
 
   showToast(message: string, type: 'success' | 'error' | 'warning' = 'success') {
     clearTimeout(this.toastTimeout);
     this.toast = { message, type };
+    this.toastFading = false;
     this.cdr.detectChanges();
     this.toastTimeout = setTimeout(() => {
-      this.toast = null;
+      this.toastFading = true;
       this.cdr.detectChanges();
-    }, 4000);
+      setTimeout(() => {
+        this.toast = null;
+        this.cdr.detectChanges();
+      }, 300);
+    }, 2500);
   }
 
   // Account management
