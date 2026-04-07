@@ -20,7 +20,7 @@ import { Tenant, TenantSchema } from '../schemas/tenant.schema';
             throw new Error('JWT_SECRET environment variable is required in production');
           }
           // Only allow default in development
-          return { secret: 'dev-only-secret', signOptions: { expiresIn: '1d' } };
+          return { secret: 'change-me-in-production', signOptions: { expiresIn: '1d' } };
         }
         return { secret, signOptions: { expiresIn: '1d' } };
       },

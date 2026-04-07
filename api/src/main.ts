@@ -8,7 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Validate after ConfigModule loads .env
-  const required = ['GEMINI_API_KEY', 'MONGO_URI', 'JWT_SECRET'];
+  const required = ['GEMINI_API_KEY'];
   const missing = required.filter(key => !process.env[key]);
   if (missing.length > 0) {
     console.error(`Missing required environment variables: ${missing.join(', ')}`);

@@ -40,7 +40,7 @@ That's it. The stack includes MongoDB, the API, and the web dashboard — all ru
 - **General Settings**: Set your agent's name and system prompt (personality)
 - **Widget Appearance**: Customize the chat widget colors, title, and icon (emoji picker)
 - **Dark Mode**: Toggle between light and dark themes for the dashboard using the moon/sun button in the header
-- **Knowledge Base**: Upload PDFs or add text to give your agent domain knowledge (RAG)
+- **Knowledge Base**: Upload files (PDF, Word, TXT, JSON, CSV, Markdown) or add text to give your agent domain knowledge (RAG)
 - **Skills (Tools)**: Enable custom tools your agent can use (see [TOOLS.md](TOOLS.md) for how to create them)
 - **Analytics**: View conversation stats and recent chat history
 - **Install**: Get the embed code to add the chat widget to your website
@@ -93,7 +93,8 @@ JWT_SECRET=your-strong-random-secret
 DEFAULT_ADMIN_PASSWORD=a-strong-password
 ```
 
-Then change your password from the Account section in the dashboard.
+- **`JWT_SECRET`** — A long random string used to sign auth tokens. Generate one with `openssl rand -hex 32`. If you don't set it, a default is used — **never go to production without changing this**.
+- **`DEFAULT_ADMIN_PASSWORD`** — Only used once: when the database is empty and the app creates the first admin account. Set this **before your first `docker-compose up`** on a new server. After that, you can change your password from the **Account** tab in the dashboard and this variable is never read again. If you later connect to an existing database (e.g., MongoDB Atlas), this variable is ignored since the admin already exists.
 
 ### MongoDB Atlas (Optional)
 
