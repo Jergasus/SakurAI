@@ -50,9 +50,9 @@ Upload your text / documents and SakurAI will use them to answer questions with 
 The agent maintains context throughout the conversation and uses RAG context. Each new session starts fresh.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/daa9f692-5cf8-4709-be6b-a7706b95d214" alt="Chat History 1" width="350" />
-  <img src="https://github.com/user-attachments/assets/534c8986-103e-4180-9394-df0841a84b47" alt="Chat History 2" width="350" />
-  <img src="https://github.com/user-attachments/assets/370607bf-9a5b-4310-8a13-28e31ee82b1a" alt="Chat History 3" width="350" />
+  <img src="https://github.com/user-attachments/assets/daa9f692-5cf8-4709-be6b-a7706b95d214" alt="Chat History 1" width="260" />
+  <img src="https://github.com/user-attachments/assets/534c8986-103e-4180-9394-df0841a84b47" alt="Chat History 2" width="260" />
+  <img src="https://github.com/user-attachments/assets/370607bf-9a5b-4310-8a13-28e31ee82b1a" alt="Chat History 3" width="260" />
 </p>
 
 ## Features
