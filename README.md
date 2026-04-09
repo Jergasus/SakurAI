@@ -210,6 +210,16 @@ Each instance is fully isolated — separate database, separate knowledge base, 
 > [!TIP]
 > You only need to change `WEB_PORT` in `.env` to avoid port conflicts. Docker Compose uses the folder name to isolate containers, networks, and volumes automatically. If using **MongoDB Atlas**, set a different database name in `MONGO_URI` for each instance (e.g., `mongodb+srv://.../agent_1` and `mongodb+srv://.../agent_2`).
 
+## Support
+
+If you like my work, you can support me:
+
+<p align="center">
+  <a href="https://buymeacoffee.com/jergasus">
+    <img src="https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me A Coffee" />
+  </a>
+</p>
+
 ## License
 
 [MIT](LICENSE)
